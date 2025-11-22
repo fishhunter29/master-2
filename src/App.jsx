@@ -2,6 +2,27 @@ import React, { useEffect, useMemo, useState } from "react";
 import MobileSummaryBar from "./components/MobileSummaryBar.jsx";
 import LocationModal from "./components/LocationModal.jsx";
 
+/* -----------------------------
+   Helpers
+------------------------------ */
+
+const safeNum = (n) =>
+  typeof n === "number" && isFinite(n) ? n : 0;
+
+const formatINR = (n) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(safeNum(n));
+
+const addDays = (yyyy_mm_dd, n) => {
+  if (!yyyy_mm_dd) return null;
+  const d = new Date(yyyy_mm_dd);
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+};
+
 // Try to derive a realistic duration (in hours) from many possible fields
 function getDurationHrs(loc) {
   const candidates = [
@@ -33,8 +54,8 @@ function getDurationHrs(loc) {
     const s = v.toLowerCase();
 
     // full day / half day keywords
-    if (s.includes("full day")) return 6;      // treat "full-day" as ~6h
-    if (s.includes("half day")) return 3;      // treat "half-day" as ~3h
+    if (s.includes("full day")) return 6; // ~6h
+    if (s.includes("half day")) return 3; // ~3h
 
     // ranges like "1.5–2 hours" or "2-3 hours"
     const range = s.match(/([\d.]+)\s*[–-]\s*([\d.]+)/);
@@ -68,6 +89,7 @@ function getDurationHrs(loc) {
   // 3) Fallback if nothing usable is found
   return 2;
 }
+
 function inferMoods(loc) {
   const moods = new Set();
   const text = `${loc.name || ""} ${loc.brief || ""}`.toLowerCase();
@@ -85,7 +107,11 @@ function inferMoods(loc) {
     moods.add("Family");
   if (/wildlife|reef|coral|mangrove|bird|nature|peak|national park/.test(text))
     moods.add("Photography");
-  if (/lighthouse|mangrove|cave|long island|mud volcano|baratang|saddle peak|remote/.test(text))
+  if (
+    /lighthouse|mangrove|cave|long island|mud volcano|baratang|saddle peak|remote/.test(
+      text
+    )
+  )
     moods.add("Offbeat");
 
   if (!moods.size) moods.add("Balanced");
@@ -150,8 +176,6 @@ function orderByBestTime(items) {
 
 // Always: Day 1 = arrival at IXZ
 // Always: last day = mandatory departure from IXZ
-// Always: Day 1 = arrival at IXZ
-// Always: last day = mandatory departure from IXZ
 function generateItineraryDays(selectedLocs, startFromPB = true) {
   const days = [];
   const PB = "Port Blair (South Andaman)";
@@ -212,7 +236,9 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
           type: "location",
           ref: loc.id,
           name: loc.name,
-          durationHrs: loc.durationHrs ?? inferDurationHrs(loc),
+          durationHrs: Number.isFinite(loc.durationHrs)
+            ? loc.durationHrs
+            : getDurationHrs(loc),
           bestTimes: loc.bestTimes || [],
         })),
         transport:
@@ -229,7 +255,7 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
     locs.forEach((loc) => {
       const dur = Number.isFinite(loc.durationHrs)
         ? loc.durationHrs
-        : inferDurationHrs(loc);
+        : getDurationHrs(loc);
       const wouldBe = timeUsed + dur;
 
       // If adding this location exceeds 7h or bucket already has 4 spots,
@@ -297,8 +323,9 @@ export default function App() {
   const [activities, setActivities] = useState([]);
   const [locAdventures, setLocAdventures] = useState([]);
   const [dataStatus, setDataStatus] = useState("loading"); // loading | ready | error
-   // Location detail modal
-const [openLoc, setOpenLoc] = useState(null);
+
+  // Location detail modal
+  const [openLoc, setOpenLoc] = useState(null);
 
   // Trip basics
   const [step, setStep] = useState(0);
@@ -324,9 +351,6 @@ const [openLoc, setOpenLoc] = useState(null);
   // Adventures
   const [addonIds, setAddonIds] = useState([]);
 
-  // Location modal state
-  const [openLoc, setOpenLoc] = useState(null);
-
   // Load JSON data once
   useEffect(() => {
     const withTimeout = (promise, ms, label) =>
@@ -343,8 +367,7 @@ const [openLoc, setOpenLoc] = useState(null);
     const fetchJSON = async (path, label) => {
       try {
         const res = await withTimeout(fetch(path, { cache: "no-store" }), 8000, label);
-        if (!res.ok)
-          throw new Error(`${label} ${res.status} ${res.statusText}`);
+        if (!res.ok) throw new Error(`${label} ${res.status} ${res.statusText}`);
         return res.json();
       } catch (e) {
         console.error(`[data] ${label} failed:`, e);
@@ -360,7 +383,7 @@ const [openLoc, setOpenLoc] = useState(null);
           fetchJSON("/data/location_adventures.json", "location_adventures"),
         ]);
 
-        const safeLocs = Array.isArray(locs) ? locs.map(normalizeLocation) : [];
+        const safeLocs = Array.isArray(locs) ? locs : [];
         const safeActs = Array.isArray(acts) ? acts : [];
         const safeMap = Array.isArray(map) ? map : [];
 
@@ -378,11 +401,18 @@ const [openLoc, setOpenLoc] = useState(null);
   // Derived data
   const locations = useMemo(
     () =>
-      rawLocations.map((l) => ({
-        ...l,
-        island: normalizeIslandName(l.island),
-        moods: Array.isArray(l.moods) && l.moods.length ? l.moods : inferMoods(l),
-      })),
+      rawLocations.map((l) => {
+        const durationHrs = getDurationHrs(l);
+        const withDur = { ...l, durationHrs };
+        return {
+          ...withDur,
+          island: normalizeIslandName(withDur.island),
+          moods:
+            Array.isArray(withDur.moods) && withDur.moods.length
+              ? withDur.moods
+              : inferMoods(withDur),
+        };
+      }),
     [rawLocations]
   );
 
@@ -424,8 +454,7 @@ const [openLoc, setOpenLoc] = useState(null);
   const addEmptyDayAfter = (index) => {
     setDays((prev) => {
       const copy = [...prev];
-      const baseIsland =
-        copy[index]?.island || "Port Blair (South Andaman)";
+      const baseIsland = copy[index]?.island || "Port Blair (South Andaman)";
       copy.splice(index + 1, 0, {
         island: baseIsland,
         items: [],
@@ -628,61 +657,55 @@ const [openLoc, setOpenLoc] = useState(null);
           color: "#b91c1c",
         }}
       >
-        Could not load data. Please check{" "}
-        <code>/public/data/*.json</code> in the repo.
+        Could not load data. Please check <code>/public/data/*.json</code> in the
+        repo.
       </div>
     );
   }
 
- const openModalFor = (loc) => {
-  if (!loc) return;
+  const openModalFor = (loc) => {
+    if (!loc) return;
 
-  // 1) Nearby = other locations on same island (max 6)
-  const nearby = locations
-    .filter(
-      (l) =>
-        l.island === loc.island &&
-        l.id !== loc.id
-    )
-    .slice(0, 6)
-    .map((l) => ({
-      id: l.id,
-      name: l.name,
-      island: l.island,
-    }));
+    // 1) Nearby = other locations on same island (max 6)
+    const nearby = locations
+      .filter((l) => l.island === loc.island && l.id !== loc.id)
+      .slice(0, 6)
+      .map((l) => ({
+        id: l.id,
+        name: l.name,
+        island: l.island,
+      }));
 
-  // 2) Adventures from location_adventures.json
-  const advIds = new Set();
+    // 2) Adventures from location_adventures.json
+    const advIds = new Set();
+    locAdventures.forEach((m) => {
+      const locId = m.locationId || m.location_id; // support both keys
+      const advList = m.adventureIds || m.adventure_ids || [];
+      if (locId && locId === loc.id) {
+        advList.forEach((id) => advIds.add(id));
+      }
+    });
 
-  locAdventures.forEach((m) => {
-    const locId = m.locationId || m.location_id;        // support both keys
-    const advList = m.adventureIds || m.adventure_ids || [];
+    // Map adventure IDs -> full activity objects (with price)
+    const adventures = activities
+      .filter((a) => advIds.has(a.id))
+      .map((a) => ({
+        id: a.id,
+        name: a.name,
+        island: (a.islands && a.islands[0]) || loc.island,
+        type: a.category || a.type || "Adventure",
+        category: a.category,
+        basePriceINR: a.basePriceINR ?? a.price,
+        price: a.basePriceINR ?? a.price,
+      }));
 
-    if (locId && locId === loc.id) {
-      advList.forEach((id) => advIds.add(id));
-    }
-  });
-
-  // Map adventure IDs -> full activity objects (with price)
-  const adventures = activities
-    .filter((a) => advIds.has(a.id))
-    .map((a) => ({
-      id: a.id,
-      name: a.name,
-      island: (a.islands && a.islands[0]) || loc.island,
-      type: a.category || a.type || "Adventure",
-      category: a.category,
-      basePriceINR: a.basePriceINR ?? a.price,
-      price: a.basePriceINR ?? a.price,
-    }));
-
-  // 3) Pass enriched object into modal
-  setOpenLoc({
-    ...loc,
-    nearby,
-    adventures,
-  });
-};
+    // 3) Pass enriched object into modal
+    setOpenLoc({
+      ...loc,
+      nearby,
+      adventures,
+    });
+  };
 
   const closeModal = () => setOpenLoc(null);
 
@@ -979,8 +1002,8 @@ const [openLoc, setOpenLoc] = useState(null);
                   marginBottom: 8,
                 }}
               >
-                First we show adventures suggested from your selected
-                locations. Below that, you’ll see all available adventures.
+                First we show adventures suggested from your selected locations.
+                Below that, you’ll see all available adventures.
               </div>
 
               {/* Suggested first */}
@@ -1335,9 +1358,7 @@ const [openLoc, setOpenLoc] = useState(null);
                     </Field>
                     <Field label="Seat map">
                       <button
-                        onClick={() =>
-                          window.open(SEATMAP_URL, "_blank")
-                        }
+                        onClick={() => window.open(SEATMAP_URL, "_blank")}
                         style={{
                           padding: "8px 10px",
                           borderRadius: 8,
@@ -1398,9 +1419,7 @@ const [openLoc, setOpenLoc] = useState(null);
                       gap: 10,
                     }}
                   >
-                    {Array.from(
-                      new Set(days.map((d) => d.island))
-                    )
+                    {Array.from(new Set(days.map((d) => d.island)))
                       .filter(Boolean)
                       .map((isl) => (
                         <label
@@ -1522,14 +1541,8 @@ const [openLoc, setOpenLoc] = useState(null);
                     fontSize: 14,
                   }}
                 >
-                  <RowSplit
-                    label="Hotels"
-                    value={formatINR(hotelsTotal)}
-                  />
-                  <RowSplit
-                    label="Ferries"
-                    value={formatINR(ferryTotal)}
-                  />
+                  <RowSplit label="Hotels" value={formatINR(hotelsTotal)} />
+                  <RowSplit label="Ferries" value={formatINR(ferryTotal)} />
                   <RowSplit
                     label="Ground transport"
                     value={formatINR(logisticsTotal)}
@@ -1579,25 +1592,25 @@ const [openLoc, setOpenLoc] = useState(null);
 
       {/* Location detail modal */}
       <LocationModal
-  location={openLoc}
-  onClose={() => setOpenLoc(null)}
-  onAddLocation={(locId) => {
-    if (!locId) return;
-    setSelectedIds((prev) =>
-      prev.includes(locId) ? prev : [...prev, locId]
-    );
-  }}
-  onAddAdventure={(advId) => {
-    if (!advId) return;
-    setAddonIds((prev) =>
-      prev.includes(advId) ? prev : [...prev, advId]
-    );
-  }}
-  onOpenLocation={(locId) => {
-    const target = locations.find((l) => l.id === locId);
-    if (target) openModalFor(target);
-  }}
-/>
+        location={openLoc}
+        onClose={closeModal}
+        onAddLocation={(locId) => {
+          if (!locId) return;
+          setSelectedIds((prev) =>
+            prev.includes(locId) ? prev : [...prev, locId]
+          );
+        }}
+        onAddAdventure={(advId) => {
+          if (!advId) return;
+          setAddonIds((prev) =>
+            prev.includes(advId) ? prev : [...prev, advId]
+          );
+        }}
+        onOpenLocation={(locId) => {
+          const target = locations.find((l) => l.id === locId);
+          if (target) openModalFor(target);
+        }}
+      />
 
       {/* Mobile summary bar */}
       <MobileSummaryBar
@@ -1640,7 +1653,6 @@ const pillBtn = {
   padding: "6px 10px",
   fontWeight: 700,
 };
-
 
 const dangerBtn = {
   border: "1px solid #ef4444",
