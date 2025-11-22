@@ -70,6 +70,20 @@ function inferMoods(loc) {
   return Array.from(moods);
 }
 
+function normalizeIslandName(rawIsland) {
+  if (!rawIsland) return "Port Blair (South Andaman)";
+  const s = String(rawIsland).trim();
+  if (/^port blair/i.test(s)) return "Port Blair (South Andaman)";
+  if (/havelock/i.test(s)) return "Havelock (Swaraj Dweep)";
+  if (/neil/i.test(s) || /shaheed dweep/i.test(s)) return "Neil (Shaheed Dweep)";
+  if (/long island/i.test(s)) return "Long Island (Middle Andaman)";
+  if (/rangat/i.test(s)) return "Rangat (Middle Andaman)";
+  if (/mayabunder/i.test(s)) return "Mayabunder (Middle Andaman)";
+  if (/diglipur|north andaman/i.test(s)) return "Diglipur (North Andaman)";
+  if (/little andaman|hut bay/i.test(s)) return "Little Andaman";
+  return s;
+}
+
 const DEFAULT_ISLANDS = [
   "Port Blair (South Andaman)",
   "Havelock (Swaraj Dweep)",
@@ -137,10 +151,11 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
     return days;
   }
 
-  // group by island
+  // group by island (normalised)
   const byIsland = {};
   selectedLocs.forEach((l) => {
-    (byIsland[l.island] ||= []).push(l);
+    const isl = normalizeIslandName(l.island);
+    (byIsland[isl] ||= []).push(l);
   });
 
   // island visit order
@@ -266,26 +281,21 @@ export default function App() {
   // Adventures
   const [addonIds, setAddonIds] = useState([]);
 
-  <LocationModal
-  location={openLoc}
-  onClose={closeModal}
-  onAddLocation={(locId) => {
-    if (!locId) return;
-    setSelectedIds((prev) =>
-      prev.includes(locId) ? prev : [...prev, locId]
-    );
-  }}
-  onAddAdventure={(advId) => {
-    if (!advId) return;
-    setAddonIds((prev) =>
-      prev.includes(advId) ? prev : [...prev, advId]
-    );
-  }}
-  onOpenLocation={(locId) => {
-    const target = locations.find((l) => l.id === locId);
-    if (target) setOpenLoc(target);
-  }}
-/>
+  // Location modal state
+  const [openLoc, setOpenLoc] = useState(null);
+
+  // Load JSON data once
+  useEffect(() => {
+    const withTimeout = (promise, ms, label) =>
+      Promise.race([
+        promise,
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error(`${label} timed out after ${ms}ms`)),
+            ms
+          )
+        ),
+      ]);
 
     const fetchJSON = async (path, label) => {
       try {
@@ -327,6 +337,7 @@ export default function App() {
     () =>
       rawLocations.map((l) => ({
         ...l,
+        island: normalizeIslandName(l.island),
         moods: Array.isArray(l.moods) && l.moods.length ? l.moods : inferMoods(l),
       })),
     [rawLocations]
@@ -467,8 +478,10 @@ export default function App() {
     // mapped by locationId
     const mappedIds = new Set();
     locAdventures.forEach((m) => {
-      if (selectedSet.has(m.locationId)) {
-        (m.adventureIds || []).forEach((id) => mappedIds.add(id));
+      const locId = m.locationId || m.location_id;
+      const advList = m.adventureIds || m.adventure_ids || [];
+      if (locId && selectedSet.has(locId)) {
+        advList.forEach((id) => mappedIds.add(id));
       }
     });
 
@@ -579,47 +592,47 @@ export default function App() {
   }
 
   const openModalFor = (loc) => {
-  // 1) Nearby = other locations on same island (max 6)
-  const nearby = locations
-    .filter(
-      (l) =>
-        l.island === loc.island &&
-        l.id !== loc.id
-    )
-    .slice(0, 6)
-    .map((l) => ({
-      id: l.id,
-      name: l.name,
-      island: l.island,
-    }));
+    // 1) Nearby = other locations on same island (max 6)
+    const nearby = locations
+      .filter(
+        (l) =>
+          l.island === loc.island &&
+          l.id !== loc.id
+      )
+      .slice(0, 6)
+      .map((l) => ({
+        id: l.id,
+        name: l.name,
+        island: l.island,
+      }));
 
-  // 2) Adventures from location_adventures.json
-  const advIds = new Set();
+    // 2) Adventures from location_adventures.json
+    const advIds = new Set();
 
-  locAdventures.forEach((m) => {
-    const locId = m.locationId || m.location_id;        // support both
-    const advList = m.adventureIds || m.adventure_ids || [];
+    locAdventures.forEach((m) => {
+      const locId = m.locationId || m.location_id;
+      const advList = m.adventureIds || m.adventure_ids || [];
 
-    if (locId && locId === loc.id) {
-      advList.forEach((id) => advIds.add(id));
-    }
-  });
+      if (locId && locId === loc.id) {
+        advList.forEach((id) => advIds.add(id));
+      }
+    });
 
-  const adventures = activities
-    .filter((a) => advIds.has(a.id))
-    .map((a) => ({
-      id: a.id,
-      name: a.name,
-      type: a.category || a.type || "Adventure",
-    }));
+    const adventures = activities
+      .filter((a) => advIds.has(a.id))
+      .map((a) => ({
+        id: a.id,
+        name: a.name,
+        type: a.category || a.type || "Adventure",
+      }));
 
-  // 3) Pass enriched object into modal
-  setOpenLoc({
-    ...loc,
-    nearby,
-    adventures,
-  });
-};
+    // 3) Pass enriched object into modal
+    setOpenLoc({
+      ...loc,
+      nearby,
+      adventures,
+    });
+  };
 
   const closeModal = () => setOpenLoc(null);
 
@@ -876,27 +889,27 @@ export default function App() {
                         </div>
                       </div>
 
-                     <button
-  onClick={() =>
-    setSelectedIds((prev) =>
-      prev.includes(l.id)
-        ? prev.filter((x) => x !== l.id)
-        : [...prev, l.id]
-    )
-  }
-  style={{
-    marginTop: 8,
-    width: "100%",
-    padding: "8px 10px",
-    borderRadius: 8,
-    border: "1px solid #0ea5e9",
-    background: picked ? "#0ea5e9" : "white",
-    color: picked ? "white" : "#0ea5e9",
-    fontWeight: 600,
-  }}
->
-  {picked ? "Added ✓" : "Add Location"}
-</button>
+                      <button
+                        onClick={() =>
+                          setSelectedIds((prev) =>
+                            prev.includes(l.id)
+                              ? prev.filter((x) => x !== l.id)
+                              : [...prev, l.id]
+                          )
+                        }
+                        style={{
+                          marginTop: 8,
+                          width: "100%",
+                          padding: "8px 10px",
+                          borderRadius: 8,
+                          border: "1px solid #0ea5e9",
+                          background: picked ? "#0ea5e9" : "white",
+                          color: picked ? "white" : "#0ea5e9",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {picked ? "Added ✓" : "Add Location"}
+                      </button>
                     </div>
                   );
                 })}
@@ -1518,15 +1531,24 @@ export default function App() {
       <LocationModal
         location={openLoc}
         onClose={closeModal}
-        onAddLocation={() => {
-          console.log("Add location to trip:", openLoc?.id);
-          // Later: push this location into the trip summary selection
+        onAddLocation={(locId) => {
+          if (!locId) return;
+          setSelectedIds((prev) =>
+            prev.includes(locId) ? prev : [...prev, locId]
+          );
         }}
-        onAddAdventure={() => {
-          console.log("Add adventures for location:", openLoc?.id);
-          // Later: open an adventures picker based on this location / island
+        onAddAdventure={(advId) => {
+          if (!advId) return;
+          setAddonIds((prev) =>
+            prev.includes(advId) ? prev : [...prev, advId]
+          );
+        }}
+        onOpenLocation={(locId) => {
+          const target = locations.find((l) => l.id === locId);
+          if (target) setOpenLoc(target);
         }}
       />
+
       {/* Mobile summary bar */}
       <MobileSummaryBar
         total={grandTotal}
@@ -1561,7 +1583,7 @@ const miniBtn = {
 };
 
 const pillBtn = {
-  border: "1px solid #0ea5e9",
+  border: "1px solid "#0ea5e9",
   background: "white",
   color: "#0ea5e9",
   borderRadius: 999,
