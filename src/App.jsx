@@ -1583,13 +1583,14 @@ const miniBtn = {
 };
 
 const pillBtn = {
-  border: "1px solid "#0ea5e9",
+  border: "1px solid #0ea5e9",
   background: "white",
   color: "#0ea5e9",
   borderRadius: 999,
   padding: "6px 10px",
   fontWeight: 700,
 };
+
 
 const dangerBtn = {
   border: "1px solid #ef4444",
