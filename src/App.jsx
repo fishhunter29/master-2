@@ -2,72 +2,55 @@ import React, { useEffect, useMemo, useState } from "react";
 import MobileSummaryBar from "./components/MobileSummaryBar.jsx";
 import LocationModal from "./components/LocationModal.jsx";
 
-/* -----------------------------------
-   Helpers & Normalisers
------------------------------------- */
-const safeNum = (n) =>
-  typeof n === "number" && isFinite(n) ? n : 0;
+function getDuration(loc) {
+  const raw = [
+    loc.durationHrs,
+    loc.typicalHours,
+    loc.visitHours,
+    loc.minHours,
+    loc.duration,
+    loc.durationSuggested,
+    loc.suggestedDuration,
+    loc.durationMin,
+    loc.durationMinutes,
+    loc.estimatedHours,
+  ];
 
-const formatINR = (n) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(safeNum(n));
+  // Try numeric durations first
+  for (const v of raw) {
+    if (!v) continue;
 
-const addDays = (yyyy_mm_dd, n) => {
-  if (!yyyy_mm_dd) return null;
-  const d = new Date(yyyy_mm_dd);
-  d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
-};
+    // Case 1: Already a number
+    if (typeof v === "number" && v > 0) {
+      return Math.round(v);
+    }
 
-// Helper to infer realistic duration
-function inferDurationHrs(raw) {
-  // 1) If durationHrs is already present and valid, use it
-  if (Number.isFinite(raw.durationHrs)) return raw.durationHrs;
+    // Case 2: Extract number from strings like "2h", "1.5–2 hours"
+    if (typeof v === "string") {
+      // Examples: "2h", "1–2 hrs", "90 min"
+      const matchH = v.match(/([\d.]+)\s*(h|hr|hour)/i);
+      const matchRange = v.match(/([\d.]+)\s*[–-]\s*([\d.]+)/);
+      const matchMin = v.match(/(\d+)\s*(min|minutes)/i);
 
-  // 2) Look for alternative fields in your JSON (adapt as needed)
-  if (Number.isFinite(raw.typicalHours)) return raw.typicalHours;
-  if (Number.isFinite(raw.duration)) return raw.duration;
-  if (Number.isFinite(raw.hours)) return raw.hours;
+      if (matchRange) {
+        // "1.5–2 hours" → average
+        const a = parseFloat(matchRange[1]);
+        const b = parseFloat(matchRange[2]);
+        return Math.round((a + b) / 2);
+      }
 
-  // 3) If you have minutes fields
-  if (Number.isFinite(raw.durationMin)) return raw.durationMin / 60;
-  if (Number.isFinite(raw.durationMinutes)) return raw.durationMinutes / 60;
+      if (matchH) {
+        return Math.round(parseFloat(matchH[1]));
+      }
 
-  // 4) If you have range fields
-  if (Number.isFinite(raw.minHours) && Number.isFinite(raw.maxHours)) {
-    return (raw.minHours + raw.maxHours) / 2;
+      if (matchMin) {
+        return Math.max(1, Math.round(parseInt(matchMin[1], 10) / 60));
+      }
+    }
   }
 
-  // 5) Fallback: assume 3 hours (more realistic than 2 h)
-  return 3;
-}
-
-// Normalise locations no matter how JSON is shaped
-function normalizeLocation(raw) {
-  const name = raw.name || raw.location || "Unnamed spot";
-
-  const durationHrs = inferDurationHrs(raw);
-
-  const bestTimes = Array.isArray(raw.bestTimes)
-    ? raw.bestTimes
-    : raw.bestTime
-    ? [raw.bestTime]
-    : [];
-
-  const moods = Array.isArray(raw.moods) ? raw.moods : null;
-  const image = raw.image || "";
-
-  return {
-    ...raw,
-    name,
-    durationHrs,
-    bestTimes,
-    moods,
-    image,
-  };
+  // fallback
+  return 2;
 }
 
 function inferMoods(loc) {
