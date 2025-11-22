@@ -252,6 +252,8 @@ export default function App() {
   const [activities, setActivities] = useState([]);
   const [locAdventures, setLocAdventures] = useState([]);
   const [dataStatus, setDataStatus] = useState("loading"); // loading | ready | error
+   // Location detail modal
+const [openLoc, setOpenLoc] = useState(null);
 
   // Trip basics
   const [step, setStep] = useState(0);
@@ -587,48 +589,55 @@ export default function App() {
     );
   }
 
-  const openModalFor = (loc) => {
-    // 1) Nearby = other locations on same island (max 6)
-    const nearby = locations
-      .filter(
-        (l) =>
-          l.island === loc.island &&
-          l.id !== loc.id
-      )
-      .slice(0, 6)
-      .map((l) => ({
-        id: l.id,
-        name: l.name,
-        island: l.island,
-      }));
+ const openModalFor = (loc) => {
+  if (!loc) return;
 
-    // 2) Adventures from location_adventures.json
-    const advIds = new Set();
+  // 1) Nearby = other locations on same island (max 6)
+  const nearby = locations
+    .filter(
+      (l) =>
+        l.island === loc.island &&
+        l.id !== loc.id
+    )
+    .slice(0, 6)
+    .map((l) => ({
+      id: l.id,
+      name: l.name,
+      island: l.island,
+    }));
 
-    locAdventures.forEach((m) => {
-      const locId = m.locationId || m.location_id;
-      const advList = m.adventureIds || m.adventure_ids || [];
+  // 2) Adventures from location_adventures.json
+  const advIds = new Set();
 
-      if (locId && locId === loc.id) {
-        advList.forEach((id) => advIds.add(id));
-      }
-    });
+  locAdventures.forEach((m) => {
+    const locId = m.locationId || m.location_id;        // support both keys
+    const advList = m.adventureIds || m.adventure_ids || [];
 
-    const adventures = activities
-      .filter((a) => advIds.has(a.id))
-      .map((a) => ({
-        id: a.id,
-        name: a.name,
-        type: a.category || a.type || "Adventure",
-      }));
+    if (locId && locId === loc.id) {
+      advList.forEach((id) => advIds.add(id));
+    }
+  });
 
-    // 3) Pass enriched object into modal
-    setOpenLoc({
-      ...loc,
-      nearby,
-      adventures,
-    });
-  };
+  // Map adventure IDs -> full activity objects (with price)
+  const adventures = activities
+    .filter((a) => advIds.has(a.id))
+    .map((a) => ({
+      id: a.id,
+      name: a.name,
+      island: (a.islands && a.islands[0]) || loc.island,
+      type: a.category || a.type || "Adventure",
+      category: a.category,
+      basePriceINR: a.basePriceINR ?? a.price,
+      price: a.basePriceINR ?? a.price,
+    }));
+
+  // 3) Pass enriched object into modal
+  setOpenLoc({
+    ...loc,
+    nearby,
+    adventures,
+  });
+};
 
   const closeModal = () => setOpenLoc(null);
 
@@ -1525,25 +1534,25 @@ export default function App() {
 
       {/* Location detail modal */}
       <LocationModal
-        location={openLoc}
-        onClose={closeModal}
-        onAddLocation={(locId) => {
-          if (!locId) return;
-          setSelectedIds((prev) =>
-            prev.includes(locId) ? prev : [...prev, locId]
-          );
-        }}
-        onAddAdventure={(advId) => {
-          if (!advId) return;
-          setAddonIds((prev) =>
-            prev.includes(advId) ? prev : [...prev, advId]
-          );
-        }}
-        onOpenLocation={(locId) => {
-          const target = locations.find((l) => l.id === locId);
-          if (target) setOpenLoc(target);
-        }}
-      />
+  location={openLoc}
+  onClose={() => setOpenLoc(null)}
+  onAddLocation={(locId) => {
+    if (!locId) return;
+    setSelectedIds((prev) =>
+      prev.includes(locId) ? prev : [...prev, locId]
+    );
+  }}
+  onAddAdventure={(advId) => {
+    if (!advId) return;
+    setAddonIds((prev) =>
+      prev.includes(advId) ? prev : [...prev, advId]
+    );
+  }}
+  onOpenLocation={(locId) => {
+    const target = locations.find((l) => l.id === locId);
+    if (target) openModalFor(target);
+  }}
+/>
 
       {/* Mobile summary bar */}
       <MobileSummaryBar
