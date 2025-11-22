@@ -1,16 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 
-const safeNum = (n) =>
-  typeof n === "number" && isFinite(n) ? n : 0;
+/**
+ * LocationModal
+ *
+ * Lightweight 70% height modal for location details.
+ *
+ * Expects `location` object shaped roughly like:
+ * {
+ *   id: "PB001",
+ *   name: "Cellular Jail",
+ *   island: "Port Blair",
+ *   overview: "Short text...",
+ *   whyGo: [ "...", "..." ],
+ *   visitTips: [ "...", "..." ],
+ *   highlights: [ "...", "..." ],
+ *   bestTime: "October to May, evenings for the show",
+ *   durationSuggested: "1.5–2 hours",
+ *   galleryImages: [ "/img/cellular-1.jpg", "/img/cellular-2.jpg" ],
+ *   nearby: [ { id, name, island }, ... ],
+ *   adventures: [ { id, name, basePriceINR, price, type, category }, ... ]
+ * }
+ *
+ * Callbacks:
+ * - onAddLocation(locId)
+ * - onAddAdventure(adventureId)
+ * - onOpenLocation(locId)   // used when clicking a nearby place
+ */
 
-const formatINR = (n) =>
-  new Intl.NumberFormat("en-IN", {
+function formatINR(n) {
+  const num = typeof n === "number" ? n : Number(n) || 0;
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(safeNum(n));
+  }).format(num);
+}
 
-export default function LocationModal({
+function LocationModal({
   location,
   onClose,
   onAddLocation,
@@ -23,417 +49,675 @@ export default function LocationModal({
     id,
     name,
     island,
-    durationHrs,
-    moods = [],
-    bestTimes = [],
-    brief,
-    description,
     overview,
-    whyGo,
-    tips,
-    notes,
+    whyGo = [],
+    visitTips = [],
+    highlights = [],
+    bestTime,
+    durationSuggested,
+    galleryImages = [],
     nearby = [],
     adventures = [],
-    image,
   } = location;
 
-  const displayDuration =
-    typeof durationHrs === "number" && isFinite(durationHrs)
-      ? `${durationHrs} hour${durationHrs === 1 ? "" : "s"}`
-      : "2–3 hours";
+  const [showNearby, setShowNearby] = useState(true);
+  const [showAdventures, setShowAdventures] = useState(true);
+  const [addedNearby, setAddedNearby] = useState({});
+  const [addedAdv, setAddedAdv] = useState({});
 
-  const displayBestTimes =
-    bestTimes && bestTimes.length
-      ? bestTimes.join(", ")
-      : "Morning or Evening";
+  // normalise nearby & adventures in case some are plain strings
+  const nearbyItems = nearby.map((n, idx) =>
+    typeof n === "string" ? { id: `nearby_${idx}`, name: n, island } : n
+  );
 
-  // Normalise whyGo and tips into bullet arrays
-  const whyGoList = Array.isArray(whyGo)
-    ? whyGo
-    : typeof whyGo === "string"
-    ? whyGo.split("\n").filter(Boolean)
-    : [];
+  const adventureItems = adventures.map((a, idx) =>
+    typeof a === "string"
+      ? { id: `adv_${idx}`, name: a, type: "Adventure" }
+      : a
+  );
 
-  const tipsList = Array.isArray(tips)
-    ? tips
-    : typeof tips === "string"
-    ? tips.split("\n").filter(Boolean)
-    : [];
+  const handleToggleNearby = (item) => {
+    setAddedNearby((prev) => ({
+      ...prev,
+      [item.id]: !prev[item.id],
+    }));
+    if (onAddLocation) {
+      // pass the real location id when available, otherwise fallback to this modal's location id
+      onAddLocation(item.id || id);
+    }
+  };
 
-  const mainOverview =
-    overview || brief || description || "Beautiful Andaman experience worth including in your trip.";
+  const handleToggleAdventure = (adv) => {
+    setAddedAdv((prev) => ({
+      ...prev,
+      [adv.id]: !prev[adv.id],
+    }));
+    if (onAddAdventure) {
+      onAddAdventure(adv.id);
+    }
+  };
 
   return (
     <div
+      className="location-modal-backdrop"
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.55)",
-        zIndex: 9999,
+        background: "rgba(15, 23, 42, 0.35)", // soft dark overlay
         display: "flex",
         justifyContent: "center",
-        alignItems: "flex-start",
-        padding: "40px 12px",
-        overflowY: "auto",
+        alignItems: "center",
+        zIndex: 9999,
+        padding: "12px",
       }}
       onClick={onClose}
     >
       <div
+        className="location-modal"
         style={{
           width: "100%",
-          maxWidth: 640,
-          background: "white",
-          borderRadius: 16,
-          overflow: "hidden",
-          boxShadow: "0 15px 40px rgba(0,0,0,0.35)",
+          maxWidth: "900px",
+          height: "70vh", // ~70% of screen height
+          background: "#FFFFFF",
+          color: "#111827",
+          borderRadius: "18px",
+          padding: "20px 22px",
+          boxShadow: "0 18px 60px rgba(15, 23, 42, 0.30)",
+          overflowY: "auto",
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* HEADER */}
+        {/* Header */}
         <div
           style={{
-            padding: 14,
-            borderBottom: "1px solid #e5e7eb",
-            position: "relative",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: "10px",
+            gap: "12px",
           }}
         >
-          {/* Close button */}
+          <div>
+            <h2
+              style={{
+                fontSize: "1.35rem",
+                fontWeight: 600,
+                margin: 0,
+                marginBottom: "4px",
+              }}
+            >
+              {name}
+            </h2>
+            <p
+              style={{
+                fontSize: "0.9rem",
+                margin: 0,
+                color: "#6B7280",
+              }}
+            >
+              {island}
+            </p>
+          </div>
           <button
             onClick={onClose}
             style={{
-              position: "absolute",
-              right: 10,
-              top: 10,
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              background: "white",
-              border: "1px solid #e2e8f0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              border: "none",
+              background: "transparent",
+              color: "#6B7280",
+              fontSize: "1.25rem",
               cursor: "pointer",
-              fontSize: 18,
-              fontWeight: 600,
+              lineHeight: 1,
             }}
+            aria-label="Close location details"
           >
-            ×
+            ✕
           </button>
-
-          <div style={{ fontSize: 11, color: "#94a3b8" }}>Location overview</div>
-          <div style={{ fontSize: 18, fontWeight: 800 }}>{name}</div>
-
-          <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
-            {island} • {displayDuration} • Best time: {displayBestTimes}
-          </div>
-
-          {moods && moods.length > 0 && (
-            <div
-              style={{
-                marginTop: 6,
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 6,
-              }}
-            >
-              {moods.slice(0, 5).map((m) => (
-                <span
-                  key={m}
-                  style={{
-                    fontSize: 10,
-                    padding: "3px 7px",
-                    borderRadius: 999,
-                    border: "1px solid #e2e8f0",
-                    background: "#f8fafc",
-                    color: "#334155",
-                  }}
-                >
-                  {m}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* BODY */}
-        <div style={{ padding: 16, maxHeight: "70vh", overflowY: "auto" }}>
-          {/* Hero image */}
-          {image && (
-            <div
+        {/* Overview */}
+        {overview && (
+          <section style={{ marginBottom: "12px" }}>
+            <h3
               style={{
-                height: 180,
-                borderRadius: 12,
-                background: `url(${image}) center/cover`,
-                marginBottom: 12,
-              }}
-            />
-          )}
-
-          {/* Overview */}
-          <section style={{ marginBottom: 12 }}>
-            <h4
-              style={{
-                margin: "0 0 4px",
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: "0.95rem",
+                fontWeight: 600,
+                margin: 0,
+                marginBottom: "4px",
               }}
             >
               Overview
-            </h4>
+            </h3>
             <p
               style={{
+                fontSize: "0.9rem",
+                lineHeight: 1.55,
                 margin: 0,
-                fontSize: 13,
-                color: "#334155",
-                whiteSpace: "pre-line",
+                color: "#4B5563",
               }}
             >
-              {mainOverview}
+              {overview}
             </p>
           </section>
+        )}
 
-          {/* Why you should go */}
-          <section style={{ marginBottom: 12 }}>
-            <h4
+        {/* Why you should go */}
+        {whyGo.length > 0 && (
+          <section style={{ marginBottom: "12px" }}>
+            <h3
               style={{
-                margin: "0 0 4px",
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: "0.95rem",
+                fontWeight: 600,
+                margin: 0,
+                marginBottom: "4px",
               }}
             >
               Why you should go
-            </h4>
+            </h3>
             <ul
               style={{
+                paddingLeft: "1.1rem",
                 margin: 0,
-                paddingLeft: 18,
-                fontSize: 13,
-                color: "#0f172a",
-                display: "grid",
-                gap: 4,
+                fontSize: "0.9rem",
+                color: "#374151",
               }}
             >
-              {whyGoList.length > 0 ? (
-                whyGoList.map((item, idx) => <li key={idx}>{item}</li>)
-              ) : (
-                <>
-                  <li>Signature Andaman experience for this island.</li>
-                  <li>Easy to combine with 1–2 nearby places in the same half day.</li>
-                  <li>Great for {moods && moods.length ? moods.join(", ") : "mixed traveller types"}.</li>
-                </>
-              )}
+              {whyGo.map((point, idx) => (
+                <li key={idx} style={{ marginBottom: "3px" }}>
+                  {point}
+                </li>
+              ))}
             </ul>
           </section>
+        )}
 
-          {/* Tips & Notes */}
+        {/* Highlights + Quick info */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1.2fr)",
+            gap: "16px",
+            marginBottom: "12px",
+          }}
+        >
+          {highlights.length > 0 && (
+            <section>
+              <h3
+                style={{
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  margin: 0,
+                  marginBottom: "4px",
+                }}
+              >
+                Highlights
+              </h3>
+              <ul
+                style={{
+                  paddingLeft: "1.1rem",
+                  margin: 0,
+                  fontSize: "0.9rem",
+                  color: "#374151",
+                }}
+              >
+                {highlights.map((h, idx) => (
+                  <li key={idx} style={{ marginBottom: "3px" }}>
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           <section
             style={{
-              marginBottom: 12,
-              padding: 10,
-              borderRadius: 10,
-              background: "#f0f9ff",
-              border: "1px solid #bae6fd",
+              background: "#F9FAFB",
+              borderRadius: "12px",
+              padding: "10px 12px",
+              border: "1px solid #E5E7EB",
             }}
           >
-            <h4
+            <h3
               style={{
-                margin: "0 0 4px",
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#0369a1",
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                margin: 0,
+                marginBottom: "4px",
               }}
             >
-              Tips & notes
-            </h4>
+              Quick info
+            </h3>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                margin: 0,
+                marginBottom: "4px",
+                color: "#4B5563",
+              }}
+            >
+              <strong>Best time:</strong>{" "}
+              <span style={{ fontWeight: 400 }}>
+                {bestTime || "October to May"}
+              </span>
+            </p>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                margin: 0,
+                marginBottom: "2px",
+                color: "#4B5563",
+              }}
+            >
+              <strong>Suggested duration:</strong>{" "}
+              <span style={{ fontWeight: 400 }}>
+                {durationSuggested || "1–2 hours"}
+              </span>
+            </p>
+          </section>
+        </div>
+
+        {/* Visit tips */}
+        {visitTips.length > 0 && (
+          <section style={{ marginBottom: "12px" }}>
+            <h3
+              style={{
+                fontSize: "0.95rem",
+                fontWeight: 600,
+                margin: 0,
+                marginBottom: "4px",
+              }}
+            >
+              Visit tips
+            </h3>
             <ul
               style={{
+                paddingLeft: "1.1rem",
                 margin: 0,
-                paddingLeft: 18,
-                fontSize: 12.5,
-                color: "#0f172a",
-                display: "grid",
-                gap: 3,
+                fontSize: "0.9rem",
+                color: "#374151",
               }}
             >
-              {tipsList.length > 0 ? (
-                tipsList.map((t, idx) => <li key={idx}>{t}</li>)
-              ) : (
-                <>
-                  <li>Plan for about {displayDuration} including photo stops.</li>
-                  <li>
-                    Try to visit in {displayBestTimes.toLowerCase()} for better light and
-                    cooler weather.
-                  </li>
-                  <li>Carry water, light snacks and some cash; card/UPI may not work everywhere.</li>
-                </>
-              )}
-              {notes && (
-                <li
-                  style={{
-                    color: "#b91c1c",
-                    fontWeight: 500,
-                  }}
-                >
-                  Note: {notes}
+              {visitTips.map((tip, idx) => (
+                <li key={idx} style={{ marginBottom: "3px" }}>
+                  {tip}
                 </li>
-              )}
+              ))}
             </ul>
           </section>
+        )}
 
-          {/* Adventures from this location */}
-          {adventures && adventures.length > 0 && (
-            <section style={{ marginBottom: 14 }}>
-              <h4
-                style={{
-                  margin: "0 0 6px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                }}
-              >
-                Adventures you can add here
-              </h4>
+        {/* Gallery */}
+        {galleryImages.length > 0 && (
+          <section style={{ marginBottom: "12px" }}>
+            <h3
+              style={{
+                fontSize: "0.95rem",
+                fontWeight: 600,
+                margin: 0,
+                marginBottom: "4px",
+              }}
+            >
+              Gallery
+            </h3>
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                overflowX: "auto",
+              }}
+            >
+              {galleryImages.map((src, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    flex: "0 0 150px",
+                    height: "95px",
+                    borderRadius: "10px",
+                    overflow: "hidden",
+                    background: "#E5E7EB",
+                    border: "1px solid #E5E7EB",
+                  }}
+                >
+                  <img
+                    src={src}
+                    alt={`${name} ${idx + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Nearby places – expanded, collapsible */}
+        <section style={{ marginBottom: "10px" }}>
+          <button
+            type="button"
+            onClick={() => setShowNearby((v) => !v)}
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "8px 10px",
+              borderRadius: "10px",
+              border: "1px solid #E5E7EB",
+              background: "#F9FAFB",
+              cursor: "pointer",
+              marginBottom: showNearby ? "8px" : "12px",
+            }}
+          >
+            <div style={{ textAlign: "left" }}>
               <div
                 style={{
-                  display: "grid",
-                  gap: 8,
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  color: "#111827",
                 }}
               >
-                {adventures.map((a) => (
+                Nearby places
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#6B7280",
+                }}
+              >
+                {nearbyItems.length
+                  ? `${nearbyItems.length} options`
+                  : "No nearby places added yet"}
+              </div>
+            </div>
+            <span style={{ fontSize: "1rem", color: "#6B7280" }}>
+              {showNearby ? "▴" : "▾"}
+            </span>
+          </button>
+
+          {showNearby && nearbyItems.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                marginBottom: "4px",
+              }}
+            >
+              {nearbyItems.map((n) => {
+                const active = !!addedNearby[n.id];
+                return (
                   <div
-                    key={a.id}
+                    key={n.id}
                     style={{
-                      borderRadius: 10,
-                      border: "1px solid #e2e8f0",
-                      padding: 10,
-                      background: "#f8fafc",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      gap: 8,
+                      padding: "8px 10px",
+                      borderRadius: "10px",
+                      border: "1px solid #E5E7EB",
+                      background: "#FFFFFF",
                     }}
                   >
-                    <div>
+                    <div
+                      style={{
+                        marginRight: "8px",
+                        cursor: onOpenLocation ? "pointer" : "default",
+                      }}
+                      onClick={() =>
+                        onOpenLocation && onOpenLocation(n.id)
+                      }
+                    >
                       <div
                         style={{
-                          fontSize: 13,
-                          fontWeight: 600,
+                          fontSize: "0.9rem",
+                          fontWeight: 500,
+                          color: "#111827",
                         }}
                       >
-                        {a.name}
+                        {n.name}
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#64748b",
+                          fontSize: "0.8rem",
+                          color: "#6B7280",
                         }}
                       >
-                        {a.type || "Adventure"} •{" "}
-                        {formatINR(a.basePriceINR ?? a.price ?? 0)} per person
+                        {n.island}
                       </div>
                     </div>
                     <button
-                      onClick={() => onAddAdventure && onAddAdventure(a.id)}
+                      type="button"
+                      onClick={() => handleToggleNearby(n)}
                       style={{
-                        padding: "6px 10px",
-                        borderRadius: 999,
-                        border: "1px solid #0ea5e9",
-                        background: "white",
-                        color: "#0ea5e9",
-                        fontSize: 12,
-                        fontWeight: 700,
+                        borderRadius: "999px",
+                        padding: "6px 11px",
+                        fontSize: "0.8rem",
+                        fontWeight: 500,
+                        border: active
+                          ? "1px solid #16A34A"
+                          : "1px solid #D1D5DB",
+                        background: active
+                          ? "rgba(22,163,74,0.08)"
+                          : "#FFFFFF",
+                        color: active ? "#166534" : "#111827",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      Add
+                      {active ? "Added ✓" : "Add to trip"}
                     </button>
                   </div>
-                ))}
-              </div>
-            </section>
+                );
+              })}
+            </div>
           )}
+        </section>
 
-          {/* Nearby attractions (max 6, as per concept) */}
-          {nearby && nearby.length > 0 && (
-            <section style={{ marginBottom: 4 }}>
-              <h4
-                style={{
-                  margin: "0 0 6px",
-                  fontSize: 13,
-                  fontWeight: 700,
-                }}
-              >
-                Nearby attractions (same island)
-              </h4>
+        {/* Adventures – expanded, collapsible */}
+        <section style={{ marginBottom: "12px" }}>
+          <button
+            type="button"
+            onClick={() => setShowAdventures((v) => !v)}
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "8px 10px",
+              borderRadius: "10px",
+              border: "1px solid #E5E7EB",
+              background: "#F9FAFB",
+              cursor: "pointer",
+              marginBottom: showAdventures ? "8px" : "12px",
+            }}
+          >
+            <div style={{ textAlign: "left" }}>
               <div
                 style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 6,
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  color: "#111827",
                 }}
               >
-                {nearby.slice(0, 6).map((n) => (
-                  <button
-                    key={n.id}
-                    onClick={() => {
-                      if (onOpenLocation) {
-                        onOpenLocation(n.id);
-                      }
-                    }}
+                Adventures available here
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#6B7280",
+                }}
+              >
+                {adventureItems.length
+                  ? `${adventureItems.length} options`
+                  : "No adventures linked yet"}
+              </div>
+            </div>
+            <span style={{ fontSize: "1rem", color: "#6B7280" }}>
+              {showAdventures ? "▴" : "▾"}
+            </span>
+          </button>
+
+          {showAdventures && adventureItems.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                marginBottom: "4px",
+              }}
+            >
+              {adventureItems.map((adv) => {
+                const active = !!addedAdv[adv.id];
+                const price =
+                  adv.basePriceINR != null
+                    ? adv.basePriceINR
+                    : adv.price != null
+                    ? adv.price
+                    : 0;
+
+                return (
+                  <div
+                    key={adv.id}
                     style={{
-                      padding: "5px 9px",
-                      borderRadius: 999,
-                      border: "1px solid #e2e8f0",
-                      background: "#f8fafc",
-                      fontSize: 11.5,
-                      cursor: onOpenLocation ? "pointer" : "default",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "8px 10px",
+                      borderRadius: "10px",
+                      border: "1px solid #E5E7EB",
+                      background: "#FFFFFF",
                     }}
                   >
-                    {n.name}
-                  </button>
-                ))}
-              </div>
-            </section>
+                    <div style={{ marginRight: "8px" }}>
+                      <div
+                        style={{
+                          fontSize: "0.9rem",
+                          fontWeight: 500,
+                          color: "#111827",
+                        }}
+                      >
+                        {adv.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "#6B7280",
+                        }}
+                      >
+                        {adv.type || adv.category || "Adventure"}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "#0F172A",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {formatINR(price)}{" "}
+                        <span style={{ color: "#6B7280" }}>
+                          per person (indicative)
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleAdventure(adv)}
+                      style={{
+                        borderRadius: "999px",
+                        padding: "6px 11px",
+                        fontSize: "0.8rem",
+                        fontWeight: 500,
+                        border: active
+                          ? "1px solid #16A34A"
+                          : "1px solid #D1D5DB",
+                        background: active
+                          ? "rgba(22,163,74,0.08)"
+                          : "#FFFFFF",
+                        color: active ? "#166534" : "#111827",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {active ? "Added ✓" : "Add"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           )}
-        </div>
+        </section>
 
-        {/* FOOTER ACTIONS */}
+        {/* CTA row */}
         <div
           style={{
-            padding: 12,
-            borderTop: "1px solid #e2e8f0",
+            marginTop: "10px",
+            paddingTop: "10px",
+            borderTop: "1px solid #E5E7EB",
             display: "flex",
-            gap: 8,
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "8px",
+            flexWrap: "wrap",
           }}
         >
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <button
+              onClick={() => onAddLocation && onAddLocation(id)}
+              style={{
+                border: "none",
+                padding: "8px 14px",
+                borderRadius: "999px",
+                background: "#2563EB",
+                color: "#FFFFFF",
+                fontSize: "0.9rem",
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              Add location
+            </button>
+            <button
+              onClick={() =>
+                onAddAdventure &&
+                adventureItems[0] &&
+                onAddAdventure(adventureItems[0].id)
+              }
+              style={{
+                border: "1px solid #D1D5DB",
+                padding: "8px 14px",
+                borderRadius: "999px",
+                background: "#FFFFFF",
+                color: "#111827",
+                fontSize: "0.9rem",
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              Add adventures
+            </button>
+          </div>
+
           <button
             onClick={onClose}
             style={{
-              flex: 1,
-              borderRadius: 8,
-              padding: "10px 12px",
-              background: "white",
-              border: "1px solid #e5e7eb",
-              fontSize: 13,
+              border: "none",
+              padding: "8px 14px",
+              borderRadius: "999px",
+              background: "#F3F4F6",
+              color: "#374151",
+              fontSize: "0.85rem",
+              cursor: "pointer",
             }}
           >
             Close
-          </button>
-          <button
-            onClick={() => onAddLocation && onAddLocation(id)}
-            style={{
-              flex: 1,
-              borderRadius: 8,
-              padding: "10px 12px",
-              border: "1px solid #0ea5e9",
-              background: "#0ea5e9",
-              color: "white",
-              fontWeight: 700,
-              fontSize: 13,
-            }}
-          >
-            Add location to trip
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+export default LocationModal;
