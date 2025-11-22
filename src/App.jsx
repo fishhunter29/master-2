@@ -131,9 +131,11 @@ function orderByBestTime(items) {
 function generateItineraryDays(selectedLocs, startFromPB = true) {
   const days = [];
 
+  const PB_NAME = "Port Blair (South Andaman)";
+
   // Day 1: arrival
   days.push({
-    island: "Port Blair (South Andaman)",
+    island: PB_NAME,
     items: [
       { type: "arrival", name: "Arrival - Veer Savarkar Intl. Airport (IXZ)" },
       { type: "transfer", name: "Airport → Hotel (Port Blair)" },
@@ -141,71 +143,64 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
     transport: "Point-to-Point",
   });
 
+  // If nothing selected, still ensure mandatory departure day
   if (!selectedLocs.length) {
-    // still ensure mandatory departure day
     days.push({
-      island: "Port Blair (South Andaman)",
+      island: PB_NAME,
       items: [{ type: "departure", name: "Airport Departure (IXZ) — Fly Out" }],
       transport: "—",
     });
     return days;
   }
 
-  // group by island (normalised)
+  // ---- GROUP BY ISLAND ----
   const byIsland = {};
   selectedLocs.forEach((l) => {
-    const isl = normalizeIslandName(l.island);
-    (byIsland[isl] ||= []).push(l);
+    const isl = l.island || PB_NAME;
+    if (!byIsland[isl]) byIsland[isl] = [];
+    byIsland[isl].push(l);
   });
 
-  // island visit order
-  let order = Object.keys(byIsland).sort(
-    (a, b) => DEFAULT_ISLANDS.indexOf(a) - DEFAULT_ISLANDS.indexOf(b)
-  );
+  // ---- ISLAND VISIT ORDER ----
+  let order = Object.keys(byIsland).sort((a, b) => {
+    const ia = DEFAULT_ISLANDS.indexOf(a);
+    const ib = DEFAULT_ISLANDS.indexOf(b);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+  });
+
   if (startFromPB) {
-    const pb = "Port Blair (South Andaman)";
-    if (order.includes(pb)) order = [pb, ...order.filter((x) => x !== pb)];
-    else order = [pb, ...order];
+    if (order.includes(PB_NAME)) {
+      order = [PB_NAME, ...order.filter((x) => x !== PB_NAME)];
+    } else {
+      order = [PB_NAME, ...order];
+    }
   }
 
-  // Fill days ~7 hours per day
+  // ---- BUILD DAYS: 1 LOCATION = 1 DAY ----
   order.forEach((island, idx) => {
-    const locs = orderByBestTime(byIsland[island] || []);
-    let bucket = [];
-    let timeUsed = 0;
+    const locs = byIsland[island] || [];
+    const sorted = orderByBestTime(locs); // still use bestTimes for nice ordering
 
-    const flush = () => {
-      if (!bucket.length) return;
+    sorted.forEach((loc) => {
       days.push({
         island,
-        items: bucket.map((x) => ({
-          type: "location",
-          ref: x.id,
-          name: x.name,
-          durationHrs: x.durationHrs ?? 2,
-          bestTimes: x.bestTimes || [],
-        })),
-        transport:
-          bucket.length >= 3
-            ? "Day Cab"
-            : /Havelock|Neil/.test(island)
-            ? "Scooter"
-            : "Point-to-Point",
+        items: [
+          {
+            type: "location",
+            ref: loc.id,
+            name: loc.name,
+            durationHrs: Number.isFinite(loc.durationHrs)
+              ? loc.durationHrs
+              : 2,
+            bestTimes: loc.bestTimes || [],
+          },
+        ],
+        // default transport – you can tweak later if you want
+        transport: /Havelock|Neil/.test(island) ? "Scooter" : "Day Cab",
       });
-      bucket = [];
-      timeUsed = 0;
-    };
+    });
 
-    while (locs.length) {
-      const x = locs.shift();
-      const dur = Number.isFinite(x.durationHrs) ? x.durationHrs : 2;
-      const would = timeUsed + dur;
-      if (bucket.length >= 4 || would > 7) flush();
-      bucket.push(x);
-      timeUsed += dur;
-    }
-    flush();
-
+    // AFTER finishing all locations of this island, add a ferry day to next island
     const nextIsland = order[idx + 1];
     if (nextIsland) {
       days.push({
@@ -222,23 +217,24 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
     }
   });
 
-  // Ensure we end back at PB + mandatory departure
+  // Ensure we end back at Port Blair before departure
   const lastIsland = days[days.length - 1]?.island;
-  if (lastIsland && lastIsland !== "Port Blair (South Andaman)") {
+  if (lastIsland && lastIsland !== PB_NAME) {
     days.push({
       island: lastIsland,
       items: [
         {
           type: "ferry",
-          name: `Ferry ${lastIsland} → Port Blair (South Andaman)`,
+          name: `Ferry ${lastIsland} → ${PB_NAME}`,
         },
       ],
       transport: "—",
     });
   }
 
+  // Mandatory departure day from Port Blair
   days.push({
-    island: "Port Blair (South Andaman)",
+    island: PB_NAME,
     items: [{ type: "departure", name: "Airport Departure (IXZ) — Fly Out" }],
     transport: "—",
   });
