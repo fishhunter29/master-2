@@ -2,57 +2,72 @@ import React, { useEffect, useMemo, useState } from "react";
 import MobileSummaryBar from "./components/MobileSummaryBar.jsx";
 import LocationModal from "./components/LocationModal.jsx";
 
-function getDuration(loc) {
-  const raw = [
+// Try to derive a realistic duration (in hours) from many possible fields
+function getDurationHrs(loc) {
+  const candidates = [
     loc.durationHrs,
     loc.typicalHours,
     loc.visitHours,
     loc.minHours,
-    loc.duration,
-    loc.durationSuggested,
-    loc.suggestedDuration,
     loc.durationMin,
     loc.durationMinutes,
-    loc.estimatedHours,
+    loc.durationSuggested,
+    loc.suggestedDuration,
+    loc.duration,
   ];
 
-  // Try numeric durations first
-  for (const v of raw) {
-    if (!v) continue;
-
-    // Case 1: Already a number
-    if (typeof v === "number" && v > 0) {
+  // 1) Numeric values first
+  for (const v of candidates) {
+    if (typeof v === "number" && isFinite(v) && v > 0) {
+      // If it looks like minutes (e.g. 90, 120), convert to hours
+      if (v > 24) {
+        return Math.max(1, Math.round(v / 60));
+      }
       return Math.round(v);
     }
+  }
 
-    // Case 2: Extract number from strings like "2h", "1.5–2 hours"
-    if (typeof v === "string") {
-      // Examples: "2h", "1–2 hrs", "90 min"
-      const matchH = v.match(/([\d.]+)\s*(h|hr|hour)/i);
-      const matchRange = v.match(/([\d.]+)\s*[–-]\s*([\d.]+)/);
-      const matchMin = v.match(/(\d+)\s*(min|minutes)/i);
+  // 2) Strings like "1–1.5 hours", "2–3 hours", "90 minutes", "Full-day excursion"
+  for (const v of candidates) {
+    if (!v || typeof v !== "string") continue;
+    const s = v.toLowerCase();
 
-      if (matchRange) {
-        // "1.5–2 hours" → average
-        const a = parseFloat(matchRange[1]);
-        const b = parseFloat(matchRange[2]);
-        return Math.round((a + b) / 2);
+    // full day / half day keywords
+    if (s.includes("full day")) return 6;      // treat "full-day" as ~6h
+    if (s.includes("half day")) return 3;      // treat "half-day" as ~3h
+
+    // ranges like "1.5–2 hours" or "2-3 hours"
+    const range = s.match(/([\d.]+)\s*[–-]\s*([\d.]+)/);
+    if (range) {
+      const a = parseFloat(range[1]);
+      const b = parseFloat(range[2]);
+      if (isFinite(a) && isFinite(b)) {
+        return Math.max(1, Math.round((a + b) / 2));
       }
+    }
 
-      if (matchH) {
-        return Math.round(parseFloat(matchH[1]));
+    // single hours: "2h", "3 hours", "1.5 hr"
+    const hMatch = s.match(/([\d.]+)\s*(h|hr|hrs|hour|hours)\b/);
+    if (hMatch) {
+      const val = parseFloat(hMatch[1]);
+      if (isFinite(val) && val > 0) {
+        return Math.max(1, Math.round(val));
       }
+    }
 
-      if (matchMin) {
-        return Math.max(1, Math.round(parseInt(matchMin[1], 10) / 60));
+    // minutes: "90 min", "45 minutes"
+    const mMatch = s.match(/(\d+)\s*(min|mins|minute|minutes)\b/);
+    if (mMatch) {
+      const mins = parseInt(mMatch[1], 10);
+      if (isFinite(mins) && mins > 0) {
+        return Math.max(1, Math.round(mins / 60));
       }
     }
   }
 
-  // fallback
+  // 3) Fallback if nothing usable is found
   return 2;
 }
-
 function inferMoods(loc) {
   const moods = new Set();
   const text = `${loc.name || ""} ${loc.brief || ""}`.toLowerCase();
