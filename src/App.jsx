@@ -22,17 +22,41 @@ const addDays = (yyyy_mm_dd, n) => {
   return d.toISOString().slice(0, 10);
 };
 
+// Helper to infer realistic duration
+function inferDurationHrs(raw) {
+  // 1) If durationHrs is already present and valid, use it
+  if (Number.isFinite(raw.durationHrs)) return raw.durationHrs;
+
+  // 2) Look for alternative fields in your JSON (adapt as needed)
+  if (Number.isFinite(raw.typicalHours)) return raw.typicalHours;
+  if (Number.isFinite(raw.duration)) return raw.duration;
+  if (Number.isFinite(raw.hours)) return raw.hours;
+
+  // 3) If you have minutes fields
+  if (Number.isFinite(raw.durationMin)) return raw.durationMin / 60;
+  if (Number.isFinite(raw.durationMinutes)) return raw.durationMinutes / 60;
+
+  // 4) If you have range fields
+  if (Number.isFinite(raw.minHours) && Number.isFinite(raw.maxHours)) {
+    return (raw.minHours + raw.maxHours) / 2;
+  }
+
+  // 5) Fallback: assume 3 hours (more realistic than 2 h)
+  return 3;
+}
+
 // Normalise locations no matter how JSON is shaped
 function normalizeLocation(raw) {
   const name = raw.name || raw.location || "Unnamed spot";
-  const durationHrs =
-    Number.isFinite(raw.durationHrs) ? raw.durationHrs :
-    Number.isFinite(raw.typicalHours) ? raw.typicalHours : 2;
+
+  const durationHrs = inferDurationHrs(raw);
+
   const bestTimes = Array.isArray(raw.bestTimes)
     ? raw.bestTimes
     : raw.bestTime
     ? [raw.bestTime]
     : [];
+
   const moods = Array.isArray(raw.moods) ? raw.moods : null;
   const image = raw.image || "";
 
@@ -128,14 +152,16 @@ function orderByBestTime(items) {
 
 // Always: Day 1 = arrival at IXZ
 // Always: last day = mandatory departure from IXZ
+// Always: Day 1 = arrival at IXZ
+// Always: last day = mandatory departure from IXZ
 function generateItineraryDays(selectedLocs, startFromPB = true) {
   const days = [];
+  const PB = "Port Blair (South Andaman)";
+  const maxHoursPerDay = 7;
 
-  const PB_NAME = "Port Blair (South Andaman)";
-
-  // Day 1: arrival
+  // --- Day 1: arrival at Port Blair ---
   days.push({
-    island: PB_NAME,
+    island: PB,
     items: [
       { type: "arrival", name: "Arrival - Veer Savarkar Intl. Airport (IXZ)" },
       { type: "transfer", name: "Airport → Hotel (Port Blair)" },
@@ -143,65 +169,86 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
     transport: "Point-to-Point",
   });
 
-  // If nothing selected, still ensure mandatory departure day
+  // If nothing selected → only arrival + departure
   if (!selectedLocs.length) {
     days.push({
-      island: PB_NAME,
+      island: PB,
       items: [{ type: "departure", name: "Airport Departure (IXZ) — Fly Out" }],
       transport: "—",
     });
     return days;
   }
 
-  // ---- GROUP BY ISLAND ----
+  // Group locations by island
   const byIsland = {};
   selectedLocs.forEach((l) => {
-    const isl = l.island || PB_NAME;
+    const isl = l.island || PB;
     if (!byIsland[isl]) byIsland[isl] = [];
     byIsland[isl].push(l);
   });
 
-  // ---- ISLAND VISIT ORDER ----
-  let order = Object.keys(byIsland).sort((a, b) => {
-    const ia = DEFAULT_ISLANDS.indexOf(a);
-    const ib = DEFAULT_ISLANDS.indexOf(b);
-    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-  });
+  // Island visiting order
+  let islandOrder = Object.keys(byIsland).sort(
+    (a, b) => DEFAULT_ISLANDS.indexOf(a) - DEFAULT_ISLANDS.indexOf(b)
+  );
 
   if (startFromPB) {
-    if (order.includes(PB_NAME)) {
-      order = [PB_NAME, ...order.filter((x) => x !== PB_NAME)];
+    if (islandOrder.includes(PB)) {
+      islandOrder = [PB, ...islandOrder.filter((x) => x !== PB)];
     } else {
-      order = [PB_NAME, ...order];
+      islandOrder = [PB, ...islandOrder];
     }
   }
 
-  // ---- BUILD DAYS: 1 LOCATION = 1 DAY ----
-  order.forEach((island, idx) => {
-    const locs = byIsland[island] || [];
-    const sorted = orderByBestTime(locs); // still use bestTimes for nice ordering
+  // For each island, group locations into days (~7 hours each)
+  islandOrder.forEach((island, idx) => {
+    const locs = orderByBestTime(byIsland[island] || []);
+    let bucket = [];
+    let timeUsed = 0;
 
-    sorted.forEach((loc) => {
+    const flushBucket = () => {
+      if (!bucket.length) return;
       days.push({
         island,
-        items: [
-          {
-            type: "location",
-            ref: loc.id,
-            name: loc.name,
-            durationHrs: Number.isFinite(loc.durationHrs)
-              ? loc.durationHrs
-              : 2,
-            bestTimes: loc.bestTimes || [],
-          },
-        ],
-        // default transport – you can tweak later if you want
-        transport: /Havelock|Neil/.test(island) ? "Scooter" : "Day Cab",
+        items: bucket.map((loc) => ({
+          type: "location",
+          ref: loc.id,
+          name: loc.name,
+          durationHrs: loc.durationHrs ?? inferDurationHrs(loc),
+          bestTimes: loc.bestTimes || [],
+        })),
+        transport:
+          bucket.length >= 3
+            ? "Day Cab"
+            : /Havelock|Neil/.test(island)
+            ? "Scooter"
+            : "Point-to-Point",
       });
+      bucket = [];
+      timeUsed = 0;
+    };
+
+    locs.forEach((loc) => {
+      const dur = Number.isFinite(loc.durationHrs)
+        ? loc.durationHrs
+        : inferDurationHrs(loc);
+      const wouldBe = timeUsed + dur;
+
+      // If adding this location exceeds 7h or bucket already has 4 spots,
+      // start a new day
+      if (bucket.length >= 4 || wouldBe > maxHoursPerDay) {
+        flushBucket();
+      }
+
+      bucket.push(loc);
+      timeUsed += dur;
     });
 
-    // AFTER finishing all locations of this island, add a ferry day to next island
-    const nextIsland = order[idx + 1];
+    // Flush any remaining locations for this island
+    flushBucket();
+
+    // Add a ferry leg to the next island, if any
+    const nextIsland = islandOrder[idx + 1];
     if (nextIsland) {
       days.push({
         island,
@@ -217,24 +264,24 @@ function generateItineraryDays(selectedLocs, startFromPB = true) {
     }
   });
 
-  // Ensure we end back at Port Blair before departure
+  // Return to Port Blair if last island is different
   const lastIsland = days[days.length - 1]?.island;
-  if (lastIsland && lastIsland !== PB_NAME) {
+  if (lastIsland && lastIsland !== PB) {
     days.push({
       island: lastIsland,
       items: [
         {
           type: "ferry",
-          name: `Ferry ${lastIsland} → ${PB_NAME}`,
+          name: `Ferry ${lastIsland} → ${PB}`,
         },
       ],
       transport: "—",
     });
   }
 
-  // Mandatory departure day from Port Blair
+  // Final mandatory departure day at Port Blair
   days.push({
-    island: PB_NAME,
+    island: PB,
     items: [{ type: "departure", name: "Airport Departure (IXZ) — Fly Out" }],
     transport: "—",
   });
