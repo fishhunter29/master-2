@@ -156,6 +156,7 @@ const CAB_MODELS = [
 
 const P2P_RATE_PER_HOP = 500;
 const SCOOTER_DAY_RATE = 800;
+const BICYCLE_DAY_RATE = 400;
 
 const SEATMAP_URL = "https://seatmap.example.com";
 
@@ -342,6 +343,7 @@ export default function App() {
   // Itinerary / transport
   const [days, setDays] = useState([]);
   const [scooterIslands, setScooterIslands] = useState(() => new Set());
+  const [bicycleIslands, setBicycleIslands] = useState(() => new Set());
   const [chosenHotels, setChosenHotels] = useState({});
   const [essentials, setEssentials] = useState({
     ferryClass: "Deluxe",
@@ -616,23 +618,39 @@ export default function App() {
 
       const stops = day.items.filter((i) => i.type === "location").length;
 
+      // Island-level overrides for rentals
+      if (bicycleIslands.has(day.island)) {
+        sum += BICYCLE_DAY_RATE;
+        return;
+      }
       if (scooterIslands.has(day.island)) {
         sum += SCOOTER_DAY_RATE;
         return;
       }
 
+      // Day-level mode
       if (day.transport === "Day Cab") sum += cabDayRate;
       else if (day.transport === "Scooter") sum += SCOOTER_DAY_RATE;
+      else if (day.transport === "Bicycle") sum += BICYCLE_DAY_RATE;
       else sum += Math.max(1, stops - 1) * P2P_RATE_PER_HOP;
     });
     return sum;
-  }, [days, scooterIslands, cabDayRate]);
+  }, [days, scooterIslands, bicycleIslands, cabDayRate]);
 
   const grandTotal = hotelsTotal + addonsTotal + logisticsTotal + ferryTotal;
   const pax = adults + infants;
 
   const toggleScooter = (island) => {
     setScooterIslands((prev) => {
+      const next = new Set(prev);
+      if (next.has(island)) next.delete(island);
+      else next.add(island);
+      return next;
+    });
+  };
+
+  const toggleBicycle = (island) => {
+    setBicycleIslands((prev) => {
       const next = new Set(prev);
       if (next.has(island)) next.delete(island);
       else next.add(island);
@@ -1214,6 +1232,7 @@ export default function App() {
                               <option>Point-to-Point</option>
                               <option>Day Cab</option>
                               <option>Scooter</option>
+                              <option>Bicycle</option>
                               <option>—</option>
                             </select>
                             <button
@@ -1331,6 +1350,7 @@ export default function App() {
           {step === 5 && (
             <Card title="Transport & Ferries">
               <div style={{ display: "grid", gap: 14 }}>
+                {/* Ferry card */}
                 <div
                   style={{
                     border: "1px solid #e5e7eb",
@@ -1374,6 +1394,7 @@ export default function App() {
                   </Row>
                 </div>
 
+                {/* Cab card */}
                 <div
                   style={{
                     border: "1px solid #e5e7eb",
@@ -1382,9 +1403,9 @@ export default function App() {
                     background: "white",
                   }}
                 >
-                  <b>Ground Transport</b>
+                  <b>Cab (Day Cab days)</b>
                   <Row>
-                    <Field label="Cab model (Day Cab days)">
+                    <Field label="Cab model">
                       <select
                         value={essentials.cabModelId}
                         onChange={(e) =>
@@ -1396,12 +1417,34 @@ export default function App() {
                       >
                         {CAB_MODELS.map((c) => (
                           <option key={c.id} value={c.id}>
-                            {c.label} — {formatINR(c.dayRate)}/day
+                            {c.label}
                           </option>
                         ))}
                       </select>
                     </Field>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#475569",
+                        alignSelf: "end",
+                      }}
+                    >
+                      This will be used on days you mark as{" "}
+                      <b>Day Cab</b> in the itinerary.
+                    </div>
                   </Row>
+                </div>
+
+                {/* Scooter card */}
+                <div
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    padding: 12,
+                    background: "white",
+                  }}
+                >
+                  <b>Scooter rental (per island)</b>
                   <div
                     style={{
                       fontSize: 12,
@@ -1409,14 +1452,16 @@ export default function App() {
                       marginBottom: 6,
                     }}
                   >
-                    Scooter per island (separate from cab, overrides to scooter
-                    on those islands):
+                    Tick the islands where you plan to use scooters. This will
+                    override other ground transport on those islands.
                   </div>
                   <div
                     style={{
-                      display: "flex",
-                      flexWrap: "wrap",
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(220px,1fr))",
                       gap: 10,
+                      marginTop: 4,
                     }}
                   >
                     {Array.from(new Set(days.map((d) => d.island)))
@@ -1429,6 +1474,7 @@ export default function App() {
                             borderRadius: 8,
                             padding: "6px 10px",
                             background: "white",
+                            fontSize: 12,
                           }}
                         >
                           <input
@@ -1438,6 +1484,60 @@ export default function App() {
                             style={{ marginRight: 6 }}
                           />
                           {isl} — {formatINR(SCOOTER_DAY_RATE)}/day
+                        </label>
+                      ))}
+                  </div>
+                </div>
+
+                {/* Bicycle card */}
+                <div
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    padding: 12,
+                    background: "white",
+                  }}
+                >
+                  <b>Bicycle rental (per island)</b>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#475569",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Tick the islands where you plan to use bicycles. This will
+                    override other ground transport on those islands.
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(220px,1fr))",
+                      gap: 10,
+                      marginTop: 4,
+                    }}
+                  >
+                    {Array.from(new Set(days.map((d) => d.island)))
+                      .filter(Boolean)
+                      .map((isl) => (
+                        <label
+                          key={isl}
+                          style={{
+                            border: "1px solid #e5e7eb",
+                            borderRadius: 8,
+                            padding: "6px 10px",
+                            background: "white",
+                            fontSize: 12,
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={bicycleIslands.has(isl)}
+                            onChange={() => toggleBicycle(isl)}
+                            style={{ marginRight: 6 }}
+                          />
+                          {isl} — {formatINR(BICYCLE_DAY_RATE)}/day
                         </label>
                       ))}
                   </div>
