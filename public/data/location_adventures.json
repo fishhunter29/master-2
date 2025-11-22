@@ -1,0 +1,418 @@
+[
+  {
+    "location_id": "BT001",
+    "locationId": "BT001",
+    "adventure_ids": [
+      "mangrove_boat_baratang",
+      "limestone_caves_baratang"
+    ],
+    "adventureIds": [
+      "mangrove_boat_baratang",
+      "limestone_caves_baratang"
+    ]
+  },
+  {
+    "location_id": "BT003",
+    "locationId": "BT003",
+    "adventure_ids": [
+      "mangrove_boat_baratang"
+    ],
+    "adventureIds": [
+      "mangrove_boat_baratang"
+    ]
+  },
+  {
+    "location_id": "DP001",
+    "locationId": "DP001",
+    "adventure_ids": [
+      "snorkeling_guided"
+    ],
+    "adventureIds": [
+      "snorkeling_guided"
+    ]
+  },
+  {
+    "location_id": "DP002",
+    "locationId": "DP002",
+    "adventure_ids": [
+      "trek_saddle_peak"
+    ],
+    "adventureIds": [
+      "trek_saddle_peak"
+    ]
+  },
+  {
+    "location_id": "DP003",
+    "locationId": "DP003",
+    "adventure_ids": [
+      "turtle_watch_guided"
+    ],
+    "adventureIds": [
+      "turtle_watch_guided"
+    ]
+  },
+  {
+    "location_id": "DP006",
+    "locationId": "DP006",
+    "adventure_ids": [
+      "guided_nature_walk"
+    ],
+    "adventureIds": [
+      "guided_nature_walk"
+    ]
+  },
+  {
+    "location_id": "HV001",
+    "locationId": "HV001",
+    "adventure_ids": [
+      "sunset_photography"
+    ],
+    "adventureIds": [
+      "sunset_photography"
+    ]
+  },
+  {
+    "location_id": "HV003",
+    "locationId": "HV003",
+    "adventure_ids": [
+      "sea_walk",
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ],
+    "adventureIds": [
+      "sea_walk",
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ]
+  },
+  {
+    "location_id": "HV004",
+    "locationId": "HV004",
+    "adventure_ids": [
+      "discover_scuba_try_dive"
+    ],
+    "adventureIds": [
+      "discover_scuba_try_dive"
+    ]
+  },
+  {
+    "location_id": "HV005",
+    "locationId": "HV005",
+    "adventure_ids": [
+      "discover_scuba_try_dive"
+    ],
+    "adventureIds": [
+      "discover_scuba_try_dive"
+    ]
+  },
+  {
+    "location_id": "HV006",
+    "locationId": "HV006",
+    "adventure_ids": [
+      "kayaking_day",
+      "kayaking_biolum"
+    ],
+    "adventureIds": [
+      "kayaking_day",
+      "kayaking_biolum"
+    ]
+  },
+  {
+    "location_id": "HV007",
+    "locationId": "HV007",
+    "adventure_ids": [
+      "scuba_fun_dive"
+    ],
+    "adventureIds": [
+      "scuba_fun_dive"
+    ]
+  },
+  {
+    "location_id": "LA001",
+    "locationId": "LA001",
+    "adventure_ids": [
+      "surf_lesson"
+    ],
+    "adventureIds": [
+      "surf_lesson"
+    ]
+  },
+  {
+    "location_id": "LA003",
+    "locationId": "LA003",
+    "adventure_ids": [
+      "guided_nature_walk"
+    ],
+    "adventureIds": [
+      "guided_nature_walk"
+    ]
+  },
+  {
+    "location_id": "LI001",
+    "locationId": "LI001",
+    "adventure_ids": [
+      "snorkeling_guided"
+    ],
+    "adventureIds": [
+      "snorkeling_guided"
+    ]
+  },
+  {
+    "location_id": "LI002",
+    "locationId": "LI002",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ]
+  },
+  {
+    "location_id": "LI003",
+    "locationId": "LI003",
+    "adventure_ids": [
+      "drone_photography"
+    ],
+    "adventureIds": [
+      "drone_photography"
+    ]
+  },
+  {
+    "location_id": "MB001",
+    "locationId": "MB001",
+    "adventure_ids": [
+      "turtle_watch_guided"
+    ],
+    "adventureIds": [
+      "turtle_watch_guided"
+    ]
+  },
+  {
+    "location_id": "MB002",
+    "locationId": "MB002",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "picnic_hike_easy"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "picnic_hike_easy"
+    ]
+  },
+  {
+    "location_id": "NL001",
+    "locationId": "NL001",
+    "adventure_ids": [
+      "glass_bottom_boat",
+      "snorkeling_guided"
+    ],
+    "adventureIds": [
+      "glass_bottom_boat",
+      "snorkeling_guided"
+    ]
+  },
+  {
+    "location_id": "NL002",
+    "locationId": "NL002",
+    "adventure_ids": [
+      "sunset_photography"
+    ],
+    "adventureIds": [
+      "sunset_photography"
+    ]
+  },
+  {
+    "location_id": "NL003",
+    "locationId": "NL003",
+    "adventure_ids": [
+      "guided_nature_walk"
+    ],
+    "adventureIds": [
+      "guided_nature_walk"
+    ]
+  },
+  {
+    "location_id": "PB002",
+    "locationId": "PB002",
+    "adventure_ids": [
+      "dinner_cruise"
+    ],
+    "adventureIds": [
+      "dinner_cruise"
+    ]
+  },
+  {
+    "location_id": "PB004",
+    "locationId": "PB004",
+    "adventure_ids": [
+      "jet_ski",
+      "sofa_ride",
+      "banana_boat"
+    ],
+    "adventureIds": [
+      "jet_ski",
+      "sofa_ride",
+      "banana_boat"
+    ]
+  },
+  {
+    "location_id": "PB006",
+    "locationId": "PB006",
+    "adventure_ids": [
+      "trek_munda_pahad"
+    ],
+    "adventureIds": [
+      "trek_munda_pahad"
+    ]
+  },
+  {
+    "location_id": "PB008",
+    "locationId": "PB008",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ]
+  },
+  {
+    "location_id": "PB009",
+    "locationId": "PB009",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ]
+  },
+  {
+    "location_id": "PB016",
+    "locationId": "PB016",
+    "adventure_ids": [
+      "picnic_hike_easy"
+    ],
+    "adventureIds": [
+      "picnic_hike_easy"
+    ]
+  },
+  {
+    "location_id": "PB017",
+    "locationId": "PB017",
+    "adventure_ids": [
+      "sea_walk",
+      "semi_submarine",
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ],
+    "adventureIds": [
+      "sea_walk",
+      "semi_submarine",
+      "snorkeling_guided",
+      "glass_bottom_boat"
+    ]
+  },
+  {
+    "location_id": "PB018",
+    "locationId": "PB018",
+    "adventure_ids": [
+      "heritage_walk"
+    ],
+    "adventureIds": [
+      "heritage_walk"
+    ]
+  },
+  {
+    "location_id": "PB025",
+    "locationId": "PB025",
+    "adventure_ids": [
+      "birding_walk"
+    ],
+    "adventureIds": [
+      "birding_walk"
+    ]
+  },
+  {
+    "location_id": "RG002",
+    "locationId": "RG002",
+    "adventure_ids": [
+      "guided_nature_walk"
+    ],
+    "adventureIds": [
+      "guided_nature_walk"
+    ]
+  },
+  {
+    "location_id": "RX001",
+    "locationId": "RX001",
+    "adventure_ids": [
+      "scuba_fun_dive",
+      "game_fishing_halfday"
+    ],
+    "adventureIds": [
+      "scuba_fun_dive",
+      "game_fishing_halfday"
+    ]
+  },
+  {
+    "location_id": "RX002",
+    "locationId": "RX002",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "scuba_fun_dive"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "scuba_fun_dive"
+    ]
+  },
+  {
+    "location_id": "RX003",
+    "locationId": "RX003",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "scuba_fun_dive"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "scuba_fun_dive"
+    ]
+  },
+  {
+    "location_id": "RX004",
+    "locationId": "RX004",
+    "adventure_ids": [
+      "snorkeling_guided",
+      "picnic_hike_easy"
+    ],
+    "adventureIds": [
+      "snorkeling_guided",
+      "picnic_hike_easy"
+    ]
+  },
+  {
+    "location_id": "RX005",
+    "locationId": "RX005",
+    "adventure_ids": [
+      "drone_photography"
+    ],
+    "adventureIds": [
+      "drone_photography"
+    ]
+  },
+  {
+    "location_id": "RX006",
+    "locationId": "RX006",
+    "adventure_ids": [
+      "boat_sunset"
+    ],
+    "adventureIds": [
+      "boat_sunset"
+    ]
+  }
+]

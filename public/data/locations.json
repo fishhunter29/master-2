@@ -1,0 +1,854 @@
+[
+  {
+    "id": "PB001",
+    "name": "Cellular Jail",
+    "island": "Port Blair",
+    "overview": "A national memorial that preserves the story of India's freedom struggle through solitary cells, galleries, and a powerful light and sound show.",
+    "whyGo": [
+      "Trace the journey of India's freedom fighters in an authentic colonial prison",
+      "Walk through three-storey wings of solitary cells and central watch tower",
+      "Experience the emotional evening light & sound show in Hindi or English"
+    ],
+    "visitTips": [
+      "Plan 1.5–2 hours in daytime plus a separate visit for the light & sound show",
+      "Book show tickets online or via authorized counters in advance during peak season",
+      "Carry a bottle of water and wear comfortable footwear for climbing stairs"
+    ],
+    "highlights": [
+      "Iconic star-shaped prison wings",
+      "Freedom fighter galleries and museum sections",
+      "Evening light & sound show in the open courtyard"
+    ],
+    "bestTime": "October to May, evenings for the show",
+    "durationSuggested": "1.5–2 hours (day) + 1 hour (show)",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Cellular+Jail+1",
+      "https://placehold.co/800x500?text=Cellular+Jail+2"
+    ],
+    "nearby": [
+      "PB002",
+      "PB003",
+      "PB004"
+    ]
+  },
+  {
+    "id": "PB002",
+    "name": "Corbyn’s Cove Beach",
+    "island": "Port Blair",
+    "overview": "A palm-fringed beach close to the city, popular for relaxed evenings, short walks, and basic water sports.",
+    "whyGo": [
+      "Enjoy an easy-access beach just a short drive from town",
+      "Catch breezy sunsets with a city-side vibe",
+      "Try simple water sports like jet ski and boat rides when available"
+    ],
+    "visitTips": [
+      "Best visited during late afternoon and sunset hours",
+      "Sea can be rough during monsoon; swimming may be restricted",
+      "Street food and small cafés are available along the promenade"
+    ],
+    "highlights": [
+      "Long curved shoreline",
+      "Evening street food and snacks",
+      "Jet ski and boat rides in season"
+    ],
+    "bestTime": "October to April, especially evenings",
+    "durationSuggested": "1–1.5 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Corbyns+Cove+1",
+      "https://placehold.co/800x500?text=Corbyns+Cove+2"
+    ],
+    "nearby": [
+      "PB001",
+      "PB003"
+    ]
+  },
+  {
+    "id": "PB003",
+    "name": "Ross Island (Netaji Subhash Chandra Bose Island)",
+    "island": "Port Blair",
+    "overview": "The former British administrative headquarters now covered in tree roots, ruins, and sea views, a short boat ride from Port Blair.",
+    "whyGo": [
+      "Explore overgrown colonial ruins wrapped in banyan roots",
+      "Enjoy panoramic harbour views and sea breeze",
+      "Meet friendly deer and peacocks roaming freely on the island"
+    ],
+    "visitTips": [
+      "Carry water and sun protection; shade is patchy on sunny days",
+      "Ferry timings are fixed; plan to return by the last boat",
+      "Wear sturdy footwear for walking on uneven paths and steps"
+    ],
+    "highlights": [
+      "Ruins of church, bakery, and officers’ quarters",
+      "Tree-root-covered walls and structures",
+      "Viewpoints facing Port Blair and open sea"
+    ],
+    "bestTime": "October to March, mornings or late afternoons",
+    "durationSuggested": "2–3 hours including ferry ride",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Ross+Island+1",
+      "https://placehold.co/800x500?text=Ross+Island+2"
+    ],
+    "nearby": [
+      "PB001",
+      "PB004"
+    ]
+  },
+  {
+    "id": "PB004",
+    "name": "North Bay Island (Coral Island)",
+    "island": "Port Blair",
+    "overview": "A small offshore island famous for shallow coral reefs, glass-bottom rides, snorkeling, and sea walking.",
+    "whyGo": [
+      "Try first-time snorkeling in relatively shallow waters",
+      "Experience glass-bottom boat rides to view corals and fish",
+      "Opt for sea-walk helmet experiences when operational"
+    ],
+    "visitTips": [
+      "Book activities in advance during high season to avoid waiting",
+      "Follow safety briefing carefully before any underwater activity",
+      "Non-swimmers can enjoy glass-bottom rides without getting wet"
+    ],
+    "highlights": [
+      "Boat rides from Aberdeen Jetty",
+      "Snorkeling and sea walk options",
+      "View of lighthouse featured on Indian currency note"
+    ],
+    "bestTime": "November to April, mornings for calmer seas",
+    "durationSuggested": "3–4 hours including transfers",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=North+Bay+Island+1"
+    ],
+    "nearby": [
+      "PB003"
+    ]
+  },
+  {
+    "id": "PB005",
+    "name": "Chidiya Tapu (Sunset Point)",
+    "island": "Port Blair",
+    "overview": "A quiet coastal stretch and mangrove-fringed area known for sunset views, birdlife, and a short trek to a viewpoint.",
+    "whyGo": [
+      "Watch colourful sunsets over forested hills and sea",
+      "Stroll along mangrove-lined shores and rocky beaches",
+      "Optionally hike to Chidiya Tapu viewpoint for aerial vistas"
+    ],
+    "visitTips": [
+      "Start early if attempting the viewpoint hike; carry water",
+      "Avoid going too close to rocky edges during high tide",
+      "Return towards town soon after sunset as the road gets dark"
+    ],
+    "highlights": [
+      "Sunset-facing coastline",
+      "Birdwatching opportunities in nearby forest",
+      "Short trek to elevated viewpoint (for fit travellers)"
+    ],
+    "bestTime": "October to March, clear-sky evenings",
+    "durationSuggested": "2–3 hours including drive from town",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Chidiya+Tapu+1"
+    ],
+    "nearby": [
+      "PB006"
+    ]
+  },
+  {
+    "id": "PB006",
+    "name": "Mount Harriet National Park",
+    "island": "Port Blair",
+    "overview": "A hilly national park with dense forests, cool breeze, and viewpoints looking back towards Port Blair and surrounding islands.",
+    "whyGo": [
+      "Escape city heat into cooler forested hills",
+      "Enjoy viewpoints that feature on the old Rs. 20 note scenery",
+      "Spot butterflies and listen to forest sounds on short walks"
+    ],
+    "visitTips": [
+      "Carry packed snacks and water; food options are limited",
+      "Leech protection is useful in monsoon months",
+      "Respect park timings and avoid littering in the forest"
+    ],
+    "highlights": [
+      "Viewpoint towards Ross Island direction",
+      "Short forest trails and picnic spots",
+      "Historic relevance from colonial times"
+    ],
+    "bestTime": "November to March, mornings and late afternoons",
+    "durationSuggested": "3–4 hours including drive",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Mount+Harriet+1"
+    ],
+    "nearby": [
+      "PB005"
+    ]
+  },
+  {
+    "id": "PB007",
+    "name": "Anthropological Museum",
+    "island": "Port Blair",
+    "overview": "A compact museum offering insights into the indigenous tribes, history, and anthropology of the Andaman & Nicobar Islands.",
+    "whyGo": [
+      "Learn about the native communities of the islands",
+      "See traditional tools, models, and photographs",
+      "Understand the social and cultural history beyond beaches"
+    ],
+    "visitTips": [
+      "Allocate 45–60 minutes for a relaxed walkthrough",
+      "Photography may be restricted in some sections",
+      "Combine with visits to Samudrika and Cellular Jail for a museum circuit"
+    ],
+    "highlights": [
+      "Ethnographic exhibits and dioramas",
+      "Panels on tribal history",
+      "Central Port Blair location"
+    ],
+    "bestTime": "Year-round, preferably mornings",
+    "durationSuggested": "45–60 minutes",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Anthropological+Museum+1"
+    ],
+    "nearby": [
+      "PB001",
+      "PB008"
+    ]
+  },
+  {
+    "id": "PB008",
+    "name": "Samudrika Naval Marine Museum",
+    "island": "Port Blair",
+    "overview": "A well-organised museum by the Indian Navy showcasing Andaman’s marine life, geography, tribal history, and environment.",
+    "whyGo": [
+      "Get a compact introduction to Andaman’s geography and reefs",
+      "View preserved marine specimens and shells",
+      "Good first-day stop to understand the overall archipelago"
+    ],
+    "visitTips": [
+      "Ideal to visit on arrival day before island-hopping",
+      "Check current opening hours and weekly holidays",
+      "Great for travellers who enjoy structured exhibits"
+    ],
+    "highlights": [
+      "Marine life and coral displays",
+      "Island maps and informative panels",
+      "Navy-managed premises"
+    ],
+    "bestTime": "Year-round, daytime",
+    "durationSuggested": "1–1.5 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Samudrika+Museum+1"
+    ],
+    "nearby": [
+      "PB007"
+    ]
+  },
+  {
+    "id": "PB009",
+    "name": "Aberdeen Jetty & Marina Park",
+    "island": "Port Blair",
+    "overview": "A waterfront strip from where many day boats depart, combined with a seaside promenade and park area for short walks.",
+    "whyGo": [
+      "Catch ferries and boats to nearby islands like Ross and North Bay",
+      "Take an evening stroll along the waterfront promenade",
+      "Enjoy quick snacks and casual views of the harbour"
+    ],
+    "visitTips": [
+      "Arrive at least 30–45 minutes before scheduled boat departure",
+      "Keep tickets and ID proofs handy for checks",
+      "Be careful with luggage and electronics near the waterline"
+    ],
+    "highlights": [
+      "Boat jetty for short-island excursions",
+      "Sea-facing promenade with benches",
+      "Central location close to town"
+    ],
+    "bestTime": "Year-round, mornings for departures and evenings for walks",
+    "durationSuggested": "30–60 minutes (excluding boat trips)",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Aberdeen+Jetty+1"
+    ],
+    "nearby": [
+      "PB001",
+      "PB003",
+      "PB004"
+    ]
+  },
+  {
+    "id": "PB010",
+    "name": "Jogger’s Park Viewpoint",
+    "island": "Port Blair",
+    "overview": "A small hilltop park overlooking the runway and city, popular for quiet evening walks and panoramic views.",
+    "whyGo": [
+      "Watch flights land and take off from an elevated viewpoint",
+      "Enjoy breezy, relatively peaceful surroundings in the city",
+      "Capture night-time views of Port Blair lights"
+    ],
+    "visitTips": [
+      "Best visited around sunset and early night",
+      "Carry a light jacket if you feel cold easily",
+      "Combine with dinner in nearby local restaurants"
+    ],
+    "highlights": [
+      "Runway and city views",
+      "Circular walking path",
+      "Benches for relaxed sitting"
+    ],
+    "bestTime": "Year-round, evenings",
+    "durationSuggested": "45–60 minutes",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Joggers+Park+1"
+    ],
+    "nearby": [
+      "PB001"
+    ]
+  },
+  {
+    "id": "HV001",
+    "name": "Radhanagar Beach (Beach No. 7)",
+    "island": "Havelock Island",
+    "overview": "A wide arc of soft white sand backed by forest, often rated among Asia’s best beaches, ideal for leisurely swims and sunsets.",
+    "whyGo": [
+      "Relax on a postcard-perfect white-sand beach",
+      "Swim in clear blue waters with gentle waves (in season)",
+      "Watch dramatic sunsets with silhouettes of trees and hills"
+    ],
+    "visitTips": [
+      "Swimming is typically allowed in the demarcated zones; follow lifeguard flags",
+      "Avoid swimming after sunset and during rough sea warnings",
+      "Minimal shops on the beach—carry water and essentials"
+    ],
+    "highlights": [
+      "Long, gently curving shoreline",
+      "Forest line right behind the sand",
+      "Sunset views over open sea"
+    ],
+    "bestTime": "November to April, late afternoon till sunset",
+    "durationSuggested": "3–4 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Radhanagar+Beach+1",
+      "https://placehold.co/800x500?text=Radhanagar+Beach+2"
+    ],
+    "nearby": [
+      "HV002"
+    ]
+  },
+  {
+    "id": "HV002",
+    "name": "Kalapathar Beach",
+    "island": "Havelock Island",
+    "overview": "A quieter stretch of coastline lined with black rocks and casuarina trees, known for calm walks and photo spots.",
+    "whyGo": [
+      "Escape to a less crowded scenic beach corner",
+      "Click photos with dark rocks and light sand contrast",
+      "Enjoy peaceful mornings away from central Havelock"
+    ],
+    "visitTips": [
+      "Parts of the beach can be rocky; watch your step near the water",
+      "Best enjoyed as a short stop rather than a full-day stay",
+      "Carry water; only small stalls may be open"
+    ],
+    "highlights": [
+      "Rocky shoreline with casuarina shade",
+      "Photo-friendly corners and viewpoints",
+      "Relatively calm atmosphere"
+    ],
+    "bestTime": "November to April, mornings and early evenings",
+    "durationSuggested": "1–2 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Kalapathar+Beach+1"
+    ],
+    "nearby": [
+      "HV001"
+    ]
+  },
+  {
+    "id": "HV003",
+    "name": "Elephant Beach (via Boat)",
+    "island": "Havelock Island",
+    "overview": "A popular day-excursion beach accessible by boat, offering vibrant reefs near shore and multiple water activities.",
+    "whyGo": [
+      "Snorkel or take glass-bottom rides over colourful reefs",
+      "Try popular water sports like sea walk and jet ski in one zone",
+      "Ideal first spot for non-swimmers to experience coral life"
+    ],
+    "visitTips": [
+      "Book boat and activities in advance during busy months",
+      "Follow instructions strictly for life jacket and underwater safety",
+      "Limited shade and basic stalls; carry essentials in a waterproof bag"
+    ],
+    "highlights": [
+      "Short boat ride from Havelock jetty",
+      "Cluster of activity operators on one beach",
+      "Shallow reef patches visible close to shore"
+    ],
+    "bestTime": "November to April, mornings when waters are calmer",
+    "durationSuggested": "3–4 hours including boat ride",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Elephant+Beach+1"
+    ],
+    "nearby": [
+      "HV004"
+    ]
+  },
+  {
+    "id": "HV004",
+    "name": "Govind Nagar Beach (Havelock Main Beach)",
+    "island": "Havelock Island",
+    "overview": "The main stretch of shoreline where many dive centres and beachside stays are located, offering convenient access to the sea.",
+    "whyGo": [
+      "Stay at beach-facing properties with easy sea access",
+      "Join introductory scuba dives with nearby operators",
+      "Walk along shallow lagoons at low tide"
+    ],
+    "visitTips": [
+      "Tide conditions change the feel of the beach through the day",
+      "Check with your dive centre about start points and timings",
+      "Respect coral patches; avoid stepping on live reef areas"
+    ],
+    "highlights": [
+      "Beachfront accommodations",
+      "Dive shops and activity counters",
+      "Shallow lagoon stretches"
+    ],
+    "bestTime": "November to April, especially mornings",
+    "durationSuggested": "Half day or more if staying nearby",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Govind+Nagar+Beach+1"
+    ],
+    "nearby": [
+      "HV003",
+      "HV005"
+    ]
+  },
+  {
+    "id": "HV005",
+    "name": "Vijay Nagar Beach (Beach No. 5)",
+    "island": "Havelock Island",
+    "overview": "A tranquil beachfront area with lagoon-like waters at certain tides, ideal for slow walks and relaxed stays.",
+    "whyGo": [
+      "Enjoy quieter beachfront resorts and homestays",
+      "Walk on long sandbars at low tide",
+      "Good base for couples or slow travellers"
+    ],
+    "visitTips": [
+      "Tidal charts influence swimming and walking options",
+      "Some areas may have seagrass; water shoes can help",
+      "Best combined with staying in nearby properties"
+    ],
+    "highlights": [
+      "Lagoon feel at low tide",
+      "Peaceful resort strip",
+      "Good for stargazing on clear nights"
+    ],
+    "bestTime": "November to April",
+    "durationSuggested": "Half day or overnight stay base",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Vijay+Nagar+Beach+1"
+    ],
+    "nearby": [
+      "HV004"
+    ]
+  },
+  {
+    "id": "HV006",
+    "name": "Dive Sites off Havelock (Generic Entry)",
+    "island": "Havelock Island",
+    "overview": "Multiple boat-access and shore-access dive sites around Havelock, managed by certified dive operators.",
+    "whyGo": [
+      "Experience Andaman’s most popular recreational scuba hub",
+      "See reefs, schooling fish, and occasional turtles or rays",
+      "Take beginner-friendly Discover Scuba sessions or full courses"
+    ],
+    "visitTips": [
+      "Always dive with a licensed, well-reviewed operator",
+      "Avoid flying for at least 18–24 hours after your last dive",
+      "Declare any medical conditions honestly in dive forms"
+    ],
+    "highlights": [
+      "Variety of dive sites with different depths",
+      "Professional dive centres and instructors",
+      "Underwater photography options with some operators"
+    ],
+    "bestTime": "December to April for best visibility",
+    "durationSuggested": "Half day for 1–2 dives",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Havelock+Diving+1"
+    ],
+    "nearby": [
+      "HV004"
+    ]
+  },
+  {
+    "id": "NL001",
+    "name": "Bharatpur Beach",
+    "island": "Neil Island",
+    "overview": "The activity hub of Neil Island with shallow turquoise waters, boat rides, and snorkelling options close to the jetty.",
+    "whyGo": [
+      "Ideal for glass-bottom boat rides and casual snorkelling",
+      "Shallow lagoon suitable for families in suitable conditions",
+      "Colourful beach shacks and stalls along the shore"
+    ],
+    "visitTips": [
+      "Good spot for a relaxed half-day on arrival or departure day",
+      "Tides affect water depth; check with locals for best slots",
+      "Keep an eye on belongings while entering the water"
+    ],
+    "highlights": [
+      "Lagoon-like shallow waters",
+      "Activity and snack zone of Neil",
+      "Proximity to the main jetty"
+    ],
+    "bestTime": "November to April, mornings",
+    "durationSuggested": "2–3 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Bharatpur+Beach+1"
+    ],
+    "nearby": [
+      "NL002"
+    ]
+  },
+  {
+    "id": "NL002",
+    "name": "Laxmanpur Beach I & II",
+    "island": "Neil Island",
+    "overview": "Twin stretches famous for sunset views, natural rock formations, and tide pools with marine life.",
+    "whyGo": [
+      "Watch sunset with wide open horizon views",
+      "Explore the natural rock bridge near low tide",
+      "Look for small fish and creatures in tide pools"
+    ],
+    "visitTips": [
+      "Check low-tide timings if you want to see the rock bridge properly",
+      "Rocks can be slippery; wear footwear with good grip",
+      "Arrive 60–90 minutes before sunset for best light and exploration time"
+    ],
+    "highlights": [
+      "Natural rock bridge arch",
+      "Sunset-facing shoreline",
+      "Tide pools and rock formations"
+    ],
+    "bestTime": "November to April, especially evenings",
+    "durationSuggested": "2–3 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Laxmanpur+Beach+1"
+    ],
+    "nearby": [
+      "NL001",
+      "NL003"
+    ]
+  },
+  {
+    "id": "NL003",
+    "name": "Sitapur Beach (Sunrise Point)",
+    "island": "Neil Island",
+    "overview": "An east-facing beach with rocky edges and open sea views, known as a peaceful sunrise point.",
+    "whyGo": [
+      "Catch sunrise over the Bay of Bengal",
+      "Experience a quiet, less commercialised side of Neil",
+      "Listen to strong waves crashing on rock formations"
+    ],
+    "visitTips": [
+      "Start early; it’s darker and quieter before dawn",
+      "Sea here is usually not suitable for casual swimming",
+      "Carry a torch or phone light for the approach path in early hours"
+    ],
+    "highlights": [
+      "Sunrise views",
+      "Rugged rocky coastline",
+      "Photo spots with minimal crowds"
+    ],
+    "bestTime": "November to April, sunrise time",
+    "durationSuggested": "1–1.5 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Sitapur+Beach+1"
+    ],
+    "nearby": [
+      "NL002"
+    ]
+  },
+  {
+    "id": "BR001",
+    "name": "Limestone Caves (Baratang)",
+    "island": "Baratang Island",
+    "overview": "An adventurous day trip involving road convoy, boat through mangroves, and a walk to see limestone cave formations.",
+    "whyGo": [
+      "Experience a mixed journey of road, creek boat, and forest walk",
+      "See stalactite and stalagmite formations inside the caves",
+      "Pass through mangrove-lined waterways on the way"
+    ],
+    "visitTips": [
+      "Day trip requires early start from Port Blair with permits",
+      "Walking path can be humid; carry water and a cap",
+      "Respect forest and tribal buffer norms on the route"
+    ],
+    "highlights": [
+      "Mangrove creek boat ride",
+      "Limestone formations inside caves",
+      "Rural island scenery en route"
+    ],
+    "bestTime": "November to March",
+    "durationSuggested": "Full-day excursion from Port Blair",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Baratang+Limestone+Caves+1"
+    ],
+    "nearby": [
+      "BR002"
+    ]
+  },
+  {
+    "id": "BR002",
+    "name": "Mud Volcano (Baratang)",
+    "island": "Baratang Island",
+    "overview": "A small cluster of mud volcano vents, an unusual geological feature reached by a short walk from the road.",
+    "whyGo": [
+      "See slowly bubbling mud vents in a natural depression",
+      "Tick off a rare geological sight few have seen",
+      "Combine with limestone caves on the same day trip"
+    ],
+    "visitTips": [
+      "Expect a simple, low-key sight rather than a dramatic geyser",
+      "Wear sturdy footwear for the slightly uneven trail",
+      "Best visited in dry season when path is less slippery"
+    ],
+    "highlights": [
+      "Mud volcano vents",
+      "Short countryside walk",
+      "Usually combined with caves visit"
+    ],
+    "bestTime": "November to March",
+    "durationSuggested": "30–45 minutes at the site",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Baratang+Mud+Volcano+1"
+    ],
+    "nearby": [
+      "BR001"
+    ]
+  },
+  {
+    "id": "RG001",
+    "name": "Amkunj Beach (Eco Park)",
+    "island": "Rangat & Middle Andaman",
+    "overview": "A rocky shoreline turned into an eco-park with wooden benches and sea-facing sit-outs along the Andaman Trunk Road.",
+    "whyGo": [
+      "Break the long road journey with a scenic sea stop",
+      "Sit on wooden platforms facing waves and breeze",
+      "Good leg-stretch point between Port Blair and North Andaman"
+    ],
+    "visitTips": [
+      "Swimming is generally not recommended due to rocks",
+      "Carry snacks and water; facilities are basic",
+      "Nice photo and rest stop for road-trippers"
+    ],
+    "highlights": [
+      "Eco-park style seating",
+      "Rocky coast views",
+      "Convenient roadside stop"
+    ],
+    "bestTime": "Year-round, daytime",
+    "durationSuggested": "30–45 minutes",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Amkunj+Beach+1"
+    ],
+    "nearby": [
+      "RG002"
+    ]
+  },
+  {
+    "id": "RG002",
+    "name": "Dhanninalah Mangrove Walkway",
+    "island": "Rangat & Middle Andaman",
+    "overview": "A long wooden boardwalk through mangroves leading to a quiet beach, showcasing the area’s ecosystem.",
+    "whyGo": [
+      "Walk over elevated wooden paths within mangroves",
+      "Observe crabs, birds, and inter-tidal life",
+      "End at a silent beach away from main road noise"
+    ],
+    "visitTips": [
+      "Boardwalk can be hot under direct sun; carry a cap",
+      "Ideal for nature lovers and photographers",
+      "Combine with Amkunj and nearby eco spots"
+    ],
+    "highlights": [
+      "Long mangrove boardwalk",
+      "Interpretation boards in some sections",
+      "Quiet terminal beach"
+    ],
+    "bestTime": "November to March, mornings or late afternoons",
+    "durationSuggested": "1–1.5 hours",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Dhanninalah+Walkway+1"
+    ],
+    "nearby": [
+      "RG001"
+    ]
+  },
+  {
+    "id": "DG001",
+    "name": "Ross & Smith Twin Islands",
+    "island": "Diglipur & North Andaman",
+    "overview": "Two small islands connected by a sandbar, surrounded by clear water, accessed by a permitted boat ride from Diglipur.",
+    "whyGo": [
+      "Walk on a natural sandbar joining two islands",
+      "Swim in turquoise shallows on a good-weather day",
+      "Enjoy a picnic-style outing in a remote northern setting"
+    ],
+    "visitTips": [
+      "Permits and fixed boat timings apply; plan through local agents",
+      "Respect no-plastic norms and carry back all waste",
+      "Tides can submerge parts of the sandbar; check tide timings"
+    ],
+    "highlights": [
+      "Iconic twin-island sandbar",
+      "Clear shallow lagoons",
+      "Remote, less commercial feel"
+    ],
+    "bestTime": "December to March, calm-sea days",
+    "durationSuggested": "3–4 hours including boat ride",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Ross+and+Smith+Islands+1"
+    ],
+    "nearby": [
+      "DG002"
+    ]
+  },
+  {
+    "id": "DG002",
+    "name": "Saddle Peak National Park (Viewpoint Trek)",
+    "island": "Diglipur & North Andaman",
+    "overview": "A demanding trek to the highest peak of the Andaman Islands, rewarding hikers with dense forest and aerial sea views.",
+    "whyGo": [
+      "Challenge yourself with one of the tougher treks in Andaman",
+      "Walk through thick tropical forest with bird calls",
+      "Get panoramic views of coastline and islands from the top"
+    ],
+    "visitTips": [
+      "Trek requires good fitness; start very early in the morning",
+      "Carry sufficient water, snacks, and rain protection",
+      "Permits and local guidance are recommended; check latest rules"
+    ],
+    "highlights": [
+      "Highest point in Andaman group",
+      "Forest trek experience",
+      "Viewpoints overlooking coasts"
+    ],
+    "bestTime": "December to February, clear and cooler days",
+    "durationSuggested": "Full day for ascent and descent",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Saddle+Peak+1"
+    ],
+    "nearby": [
+      "DG001"
+    ]
+  },
+  {
+    "id": "DG003",
+    "name": "Kalipur Beach & Turtle Nesting Zone",
+    "island": "Diglipur & North Andaman",
+    "overview": "A pebbly beach known seasonally for turtle nesting, located in a quieter northern corner of the islands.",
+    "whyGo": [
+      "Witness turtle nesting and release programs in season (with permissions)",
+      "Experience a raw, non-commercial beach setting",
+      "Stay in simple local accommodations nearby"
+    ],
+    "visitTips": [
+      "Turtle sightings are seasonal and not guaranteed",
+      "Access to nesting areas is regulated; always follow forest department guidelines",
+      "Beach is not ideal for typical swimming due to pebbles and currents"
+    ],
+    "highlights": [
+      "Potential turtle nesting activity",
+      "Rustic, unpolished coastline",
+      "Quiet northern atmosphere"
+    ],
+    "bestTime": "December to March for potential turtle season",
+    "durationSuggested": "2–3 hours or overnight nearby",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Kalipur+Beach+1"
+    ],
+    "nearby": [
+      "DG001"
+    ]
+  },
+  {
+    "id": "LA001",
+    "name": "Butler Bay Beach",
+    "island": "Little Andaman",
+    "overview": "A long, curved bay with strong waves, coconut groves, and a more offbeat surf-vibe ambience.",
+    "whyGo": [
+      "Experience one of the more remote and wild-feeling beaches",
+      "Popular with experienced surfers in specific seasons",
+      "Good for long, uncrowded walks along the shoreline"
+    ],
+    "visitTips": [
+      "Sea conditions can be strong; casual swimming is often not advised",
+      "Limited tourism infrastructure; suited for basic-travel style",
+      "Check current transport and stay options before planning"
+    ],
+    "highlights": [
+      "Long curving bay",
+      "Coconut tree backdrop",
+      "Occasional surf activity"
+    ],
+    "bestTime": "December to March, outside heavy monsoon",
+    "durationSuggested": "Half day or more if staying nearby",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Butler+Bay+Beach+1"
+    ],
+    "nearby": [
+      "LA002"
+    ]
+  },
+  {
+    "id": "LA002",
+    "name": "White Surf & Whisper Wave Waterfalls (Generic Entry)",
+    "island": "Little Andaman",
+    "overview": "Forest-fringed waterfalls in the interior of Little Andaman, reached by short treks or bike rides depending on conditions.",
+    "whyGo": [
+      "Combine beach time with freshwater dips in jungle settings",
+      "Enjoy motorbike rides or jeep journeys to the trailheads",
+      "See a lesser-visited side of the islands away from the main circuit"
+    ],
+    "visitTips": [
+      "Waterfall flow is seasonal; check local advice before heading",
+      "Trails may be slippery during or after rains",
+      "Carry adequate water, insect repellent, and waterproof bags"
+    ],
+    "highlights": [
+      "Forest waterfall pools",
+      "Rural road journeys",
+      "Offbeat, less commercial stops"
+    ],
+    "bestTime": "Post-monsoon to early winter, when flow is moderate and access is safe",
+    "durationSuggested": "3–4 hours including travel and trek",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Little+Andaman+Waterfalls+1"
+    ],
+    "nearby": [
+      "LA001"
+    ]
+  },
+  {
+    "id": "LI001",
+    "name": "Long Island Village & Lalaji Bay (Generic Entry)",
+    "island": "Long Island",
+    "overview": "A quieter island with a small settlement, forest trails and boat ride options towards serene Lalaji Bay Beach.",
+    "whyGo": [
+      "Step into a slower, community-based island atmosphere",
+      "Walk or boat through creeks and forested paths",
+      "Spend time on a tranquil, less-frequented bay"
+    ],
+    "visitTips": [
+      "Access usually requires coordination with ferries and local boats",
+      "Accommodation and amenities are limited; plan in advance",
+      "Suited for slow travellers who enjoy simple stays and walks"
+    ],
+    "highlights": [
+      "Village vibe of Long Island",
+      "Approach to Lalaji Bay",
+      "Creeks and forest sections en route"
+    ],
+    "bestTime": "December to March",
+    "durationSuggested": "Full day or overnight base",
+    "galleryImages": [
+      "https://placehold.co/800x500?text=Long+Island+Lalaji+Bay+1"
+    ],
+    "nearby": []
+  }
+    ]
