@@ -15,10 +15,12 @@ export default function LocationModal({
   onClose,
   onAddLocation,
   onAddAdventure,
+  onOpenLocation,
 }) {
   if (!location) return null;
 
   const {
+    id,
     name,
     island,
     durationHrs,
@@ -26,8 +28,10 @@ export default function LocationModal({
     bestTimes = [],
     brief,
     description,
+    overview,
     whyGo,
     tips,
+    notes,
     nearby = [],
     adventures = [],
     image,
@@ -39,7 +43,25 @@ export default function LocationModal({
       : "2–3 hours";
 
   const displayBestTimes =
-    bestTimes.length ? bestTimes.join(", ") : "Morning or Evening";
+    bestTimes && bestTimes.length
+      ? bestTimes.join(", ")
+      : "Morning or Evening";
+
+  // Normalise whyGo and tips into bullet arrays
+  const whyGoList = Array.isArray(whyGo)
+    ? whyGo
+    : typeof whyGo === "string"
+    ? whyGo.split("\n").filter(Boolean)
+    : [];
+
+  const tipsList = Array.isArray(tips)
+    ? tips
+    : typeof tips === "string"
+    ? tips.split("\n").filter(Boolean)
+    : [];
+
+  const mainOverview =
+    overview || brief || description || "Beautiful Andaman experience worth including in your trip.";
 
   return (
     <div
@@ -59,7 +81,7 @@ export default function LocationModal({
       <div
         style={{
           width: "100%",
-          maxWidth: 620,
+          maxWidth: 640,
           background: "white",
           borderRadius: 16,
           overflow: "hidden",
@@ -75,13 +97,13 @@ export default function LocationModal({
             position: "relative",
           }}
         >
-          {/* CLOSE BUTTON (FIXED) */}
+          {/* Close button */}
           <button
             onClick={onClose}
             style={{
               position: "absolute",
-              right: 12,
-              top: 12,
+              right: 10,
+              top: 10,
               width: 28,
               height: 28,
               borderRadius: "50%",
@@ -98,17 +120,44 @@ export default function LocationModal({
             ×
           </button>
 
-          <div style={{ fontSize: 12, color: "#94a3b8" }}>Location Details</div>
+          <div style={{ fontSize: 11, color: "#94a3b8" }}>Location overview</div>
           <div style={{ fontSize: 18, fontWeight: 800 }}>{name}</div>
 
           <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
-            {island} • {displayDuration} • Best: {displayBestTimes}
+            {island} • {displayDuration} • Best time: {displayBestTimes}
           </div>
+
+          {moods && moods.length > 0 && (
+            <div
+              style={{
+                marginTop: 6,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 6,
+              }}
+            >
+              {moods.slice(0, 5).map((m) => (
+                <span
+                  key={m}
+                  style={{
+                    fontSize: 10,
+                    padding: "3px 7px",
+                    borderRadius: 999,
+                    border: "1px solid #e2e8f0",
+                    background: "#f8fafc",
+                    color: "#334155",
+                  }}
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* BODY */}
         <div style={{ padding: 16, maxHeight: "70vh", overflowY: "auto" }}>
-          {/* IMAGE */}
+          {/* Hero image */}
           {image && (
             <div
               style={{
@@ -120,43 +169,70 @@ export default function LocationModal({
             />
           )}
 
-          {/* MOODS */}
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {moods.slice(0, 5).map((m) => (
-              <span
-                key={m}
-                style={{
-                  fontSize: 10,
-                  padding: "3px 7px",
-                  borderRadius: 999,
-                  background: "#f8fafc",
-                  border: "1px solid #e2e8f0",
-                  color: "#334155",
-                }}
-              >
-                {m}
-              </span>
-            ))}
-          </div>
+          {/* Overview */}
+          <section style={{ marginBottom: 12 }}>
+            <h4
+              style={{
+                margin: "0 0 4px",
+                fontSize: 14,
+                fontWeight: 700,
+              }}
+            >
+              Overview
+            </h4>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 13,
+                color: "#334155",
+                whiteSpace: "pre-line",
+              }}
+            >
+              {mainOverview}
+            </p>
+          </section>
 
-          {/* WHY GO */}
-          <div style={{ marginTop: 12 }}>
-            <h4 style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 700 }}>
+          {/* Why you should go */}
+          <section style={{ marginBottom: 12 }}>
+            <h4
+              style={{
+                margin: "0 0 4px",
+                fontSize: 14,
+                fontWeight: 700,
+              }}
+            >
               Why you should go
             </h4>
-            <div style={{ fontSize: 13, color: "#334155", whiteSpace: "pre-line" }}>
-              {whyGo || brief || description || "Beautiful spot worth visiting."}
-            </div>
-          </div>
+            <ul
+              style={{
+                margin: 0,
+                paddingLeft: 18,
+                fontSize: 13,
+                color: "#0f172a",
+                display: "grid",
+                gap: 4,
+              }}
+            >
+              {whyGoList.length > 0 ? (
+                whyGoList.map((item, idx) => <li key={idx}>{item}</li>)
+              ) : (
+                <>
+                  <li>Signature Andaman experience for this island.</li>
+                  <li>Easy to combine with 1–2 nearby places in the same half day.</li>
+                  <li>Great for {moods && moods.length ? moods.join(", ") : "mixed traveller types"}.</li>
+                </>
+              )}
+            </ul>
+          </section>
 
-          {/* TIPS */}
-          <div
+          {/* Tips & Notes */}
+          <section
             style={{
-              marginTop: 12,
+              marginBottom: 12,
               padding: 10,
+              borderRadius: 10,
               background: "#f0f9ff",
               border: "1px solid #bae6fd",
-              borderRadius: 10,
             }}
           >
             <h4
@@ -167,61 +243,96 @@ export default function LocationModal({
                 color: "#0369a1",
               }}
             >
-              Tips & Suggestions
+              Tips & notes
             </h4>
-
             <ul
               style={{
                 margin: 0,
-                paddingLeft: 16,
+                paddingLeft: 18,
                 fontSize: 12.5,
                 color: "#0f172a",
                 display: "grid",
-                gap: 4,
+                gap: 3,
               }}
             >
-              {tips ? (
-                <li style={{ whiteSpace: "pre-line" }}>{tips}</li>
+              {tipsList.length > 0 ? (
+                tipsList.map((t, idx) => <li key={idx}>{t}</li>)
               ) : (
                 <>
-                  <li>Keep at least {displayDuration} here.</li>
-                  <li>Best combined with 1–2 nearby spots on the same island.</li>
-                  <li>Great light for photos: {displayBestTimes}.</li>
+                  <li>Plan for about {displayDuration} including photo stops.</li>
+                  <li>
+                    Try to visit in {displayBestTimes.toLowerCase()} for better light and
+                    cooler weather.
+                  </li>
+                  <li>Carry water, light snacks and some cash; card/UPI may not work everywhere.</li>
                 </>
               )}
+              {notes && (
+                <li
+                  style={{
+                    color: "#b91c1c",
+                    fontWeight: 500,
+                  }}
+                >
+                  Note: {notes}
+                </li>
+              )}
             </ul>
-          </div>
+          </section>
 
-          {/* ADVENTURES */}
-          {adventures.length > 0 && (
-            <div style={{ marginTop: 16 }}>
-              <h4 style={{ margin: "0 0 6px", fontSize: 14, fontWeight: 700 }}>
-                Adventures Available
+          {/* Adventures from this location */}
+          {adventures && adventures.length > 0 && (
+            <section style={{ marginBottom: 14 }}>
+              <h4
+                style={{
+                  margin: "0 0 6px",
+                  fontSize: 14,
+                  fontWeight: 700,
+                }}
+              >
+                Adventures you can add here
               </h4>
-
-              <div style={{ display: "grid", gap: 8 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 8,
+                }}
+              >
                 {adventures.map((a) => (
                   <div
                     key={a.id}
                     style={{
-                      padding: 10,
                       borderRadius: 10,
                       border: "1px solid #e2e8f0",
+                      padding: 10,
                       background: "#f8fafc",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      gap: 8,
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{a.name}</div>
-                      <div style={{ fontSize: 11, color: "#475569" }}>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {a.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#64748b",
+                        }}
+                      >
+                        {a.type || "Adventure"} •{" "}
                         {formatINR(a.basePriceINR ?? a.price ?? 0)} per person
                       </div>
                     </div>
-
                     <button
-                      onClick={() => onAddAdventure(a.id)}
+                      onClick={() => onAddAdventure && onAddAdventure(a.id)}
                       style={{
                         padding: "6px 10px",
                         borderRadius: 999,
@@ -237,36 +348,54 @@ export default function LocationModal({
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           )}
 
-          {/* NEARBY */}
-          {nearby.length > 0 && (
-            <div style={{ marginTop: 16 }}>
-              <h4 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 6px" }}>
-                Nearby Spots
+          {/* Nearby attractions (max 6, as per concept) */}
+          {nearby && nearby.length > 0 && (
+            <section style={{ marginBottom: 4 }}>
+              <h4
+                style={{
+                  margin: "0 0 6px",
+                  fontSize: 13,
+                  fontWeight: 700,
+                }}
+              >
+                Nearby attractions (same island)
               </h4>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {nearby.map((n) => (
-                  <span
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 6,
+                }}
+              >
+                {nearby.slice(0, 6).map((n) => (
+                  <button
                     key={n.id}
+                    onClick={() => {
+                      if (onOpenLocation) {
+                        onOpenLocation(n.id);
+                      }
+                    }}
                     style={{
-                      padding: "4px 8px",
-                      fontSize: 11.5,
+                      padding: "5px 9px",
                       borderRadius: 999,
-                      background: "#f1f5f9",
                       border: "1px solid #e2e8f0",
+                      background: "#f8fafc",
+                      fontSize: 11.5,
+                      cursor: onOpenLocation ? "pointer" : "default",
                     }}
                   >
                     {n.name}
-                  </span>
+                  </button>
                 ))}
               </div>
-            </div>
+            </section>
           )}
         </div>
 
-        {/* FOOTER BUTTONS */}
+        {/* FOOTER ACTIONS */}
         <div
           style={{
             padding: 12,
@@ -283,13 +412,13 @@ export default function LocationModal({
               padding: "10px 12px",
               background: "white",
               border: "1px solid #e5e7eb",
+              fontSize: 13,
             }}
           >
             Close
           </button>
-
           <button
-            onClick={onAddLocation}
+            onClick={() => onAddLocation && onAddLocation(id)}
             style={{
               flex: 1,
               borderRadius: 8,
@@ -298,9 +427,10 @@ export default function LocationModal({
               background: "#0ea5e9",
               color: "white",
               fontWeight: 700,
+              fontSize: 13,
             }}
           >
-            Add Location
+            Add location to trip
           </button>
         </div>
       </div>
